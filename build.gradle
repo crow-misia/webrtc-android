@@ -19,13 +19,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url = 'https://maven.pkg.github.com/crow-misia/libwebrtc-bin'
-            credentials {
-                username = project.hasProperty("GITHUB_USER") ? GITHUB_USER : ''
-                password = project.hasProperty("GITHUB_TOKEN") ? GITHUB_TOKEN : ''
-            }
-        }
+        maven { url 'https://jitpack.io' }
     }
 }
 

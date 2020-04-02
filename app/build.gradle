@@ -37,8 +37,8 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'com.github.crow-misia:libwebrtc-bin:81.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
+    implementation 'com.github.crow-misia:libwebrtc-bin:82.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

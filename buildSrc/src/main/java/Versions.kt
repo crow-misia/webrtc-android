@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.3.71"
+    const val kotlin = "1.3.72"
     const val gradlePlugin = "3.6.2"
 
     const val ndk = "21.0.6113669"

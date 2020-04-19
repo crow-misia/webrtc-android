@@ -10,7 +10,7 @@ object Versions {
 
     const val appcompat = "1.1.0"
     const val androidXcore = "1.2.0"
-    const val okhttp3 = "4.4.1"
+    const val okhttp3 = "4.5.0"
     const val timber = "4.7.1"
     const val junit = "4.13"
     const val junitExt = "1.1.1"

@@ -15,5 +15,5 @@ object Versions {
     const val junit = "4.13"
     const val junitExt = "1.1.1"
     const val espresso = "3.2.0"
-    const val webrtc = "83.9.0"
+    const val webrtc = "83.10.0"
 }

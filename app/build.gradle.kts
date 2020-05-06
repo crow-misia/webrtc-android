@@ -52,6 +52,7 @@ dependencies {
     implementation(Deps.webrtc)
     implementation(Deps.okhttp3)
     implementation(Deps.timber)
+    implementation(Deps.sdp)
     testImplementation(Deps.junit)
     androidTestImplementation(Deps.junit)
     androidTestImplementation(Deps.junitExt)

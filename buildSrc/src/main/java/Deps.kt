@@ -10,4 +10,5 @@ object Deps {
     const val junitExt = "androidx.test.ext:junit:${Versions.junitExt}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
     const val webrtc = "com.github.crow-misia:libwebrtc-bin:${Versions.webrtc}"
+    const val sdp = "io.github.zncmn.sdp:sdp:${Versions.sdp}"
 }

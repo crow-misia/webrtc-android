@@ -11,6 +11,10 @@ package org.appspot.apprtc
 
 import android.content.Context
 import android.os.ParcelFileDescriptor
+import io.github.zncmn.sdp.SdpMediaDescription
+import io.github.zncmn.sdp.SdpSessionDescription
+import io.github.zncmn.sdp.attribute.FormatAttribute
+import io.github.zncmn.sdp.attribute.RTPMapAttribute
 import org.appspot.apprtc.AppRTCClient.SignalingParameters
 import org.webrtc.*
 import org.webrtc.PeerConnection.*
@@ -23,7 +27,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
-import java.util.regex.Pattern
 
 /**
  * Peer connection client implementation.
@@ -51,7 +54,7 @@ class PeerConnectionClient(
     private var videoCapturerStopped = false
     private var isError = false
     private var localRender: VideoSink? = null
-    private var remoteSinks: List<VideoSink> = listOf()
+    private var remoteSinks: List<VideoSink> = emptyList()
     private var videoWidth = 0
     private var videoHeight = 0
     private var videoFps = 0
@@ -95,7 +98,7 @@ class PeerConnectionClient(
     private var enableAudio = true
     private var localAudioTrack: AudioTrack? = null
     private var dataChannel: DataChannel? = null
-    private val dataChannelEnabled: Boolean
+    private val dataChannelEnabled: Boolean = peerConnectionParameters.dataChannelParameters != null
 
     // Enable RtcEventLog.
     private var rtcEventLog: RtcEventLog? = null
@@ -628,18 +631,18 @@ class PeerConnectionClient(
             if (isError) {
                 return@execute
             }
-            var sdpDescription = sdp.description
+            val sdpDescription = SdpSessionDescription.parse(sdp.description)
             if (preferIsac) {
-                sdpDescription = preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
+                preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
             }
             if (isVideoCallEnabled) {
-                sdpDescription = preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
+                preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
             }
             if (peerConnectionParameters.audioStartBitrate > 0) {
-                sdpDescription = setStartBitrate(AUDIO_CODEC_OPUS, false, sdpDescription, peerConnectionParameters.audioStartBitrate)
+                setStartBitrate(sdpDescription, AUDIO_CODEC_OPUS, false, peerConnectionParameters.audioStartBitrate)
             }
             Timber.d("Set remote SDP.")
-            val sdpRemote = SessionDescription(sdp.type, sdpDescription)
+            val sdpRemote = SessionDescription(sdp.type, sdpDescription.toString())
             peerConnection.setRemoteDescription(sdpObserver, sdpRemote)
         }
     }
@@ -894,14 +897,14 @@ class PeerConnectionClient(
                 reportError("Multiple SDP create.")
                 return
             }
-            var sdpDescription = origSdp.description
+            val sdpDescription = SdpSessionDescription.parse(origSdp.description)
             if (preferIsac) {
-                sdpDescription = preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
+                preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
             }
             if (isVideoCallEnabled) {
-                sdpDescription = preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
+                preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
             }
-            val sdp = SessionDescription(origSdp.type, sdpDescription)
+            val sdp = SessionDescription(origSdp.type, sdpDescription.toString())
             localSdp = sdp
             executor.execute {
                 val peerConnection = peerConnection ?: return@execute
@@ -1017,120 +1020,60 @@ class PeerConnectionClient(
             }
         }
 
-        private fun setStartBitrate(codec: String, isVideoCodec: Boolean, sdpDescription: String, bitrateKbps: Int): String {
-            val lines = sdpDescription.split("\r\n").toTypedArray()
-            var rtpmapLineIndex = -1
-            var sdpFormatUpdated = false
-            var codecRtpMap: String? = null
-            // Search for codec rtpmap in format
-            // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
-            var regex = "^a=rtpmap:(\\d+) $codec(/\\d+)+[\r]?$"
-            var codecPattern = Pattern.compile(regex)
-            for (i in lines.indices) {
-                val codecMatcher = codecPattern.matcher(lines[i])
-                if (codecMatcher.matches()) {
-                    codecRtpMap = codecMatcher.group(1)
-                    rtpmapLineIndex = i
-                    break
-                }
-            }
-            codecRtpMap ?: run {
-                Timber.w("No rtpmap for %s codec", codec)
-                return sdpDescription
-            }
-            Timber.d("Found %s rtpmap %s at %s", codec, codecRtpMap, lines[rtpmapLineIndex])
-
-            // Check if a=fmtp string already exist in remote SDP for this codec and
-            // update it with new bitrate parameter.
-            regex = "^a=fmtp:$codecRtpMap \\w+=\\d+.*[\r]?$"
-            codecPattern = Pattern.compile(regex)
-            for (i in lines.indices) {
-                val line = lines[i]
-                val codecMatcher = codecPattern.matcher(line)
-                if (codecMatcher.matches()) {
-                    Timber.d("Found %s %s", codec, line)
-                    if (isVideoCodec) {
-                        lines[i] += "; $VIDEO_CODEC_PARAM_START_BITRATE=$bitrateKbps"
-                    } else {
-                        lines[i] += "; $AUDIO_CODEC_PARAM_BITRATE=${bitrateKbps * 1000}"
+        private fun setStartBitrate(sdpDescription: SdpSessionDescription, codec: String, isVideoCodec: Boolean, bitrateKbps: Int) {
+            sdpDescription.getMediaDescriptions()
+                .mapNotNull { media ->
+                    // Search for codec rtpmap in format
+                    // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
+                    media.getAttribute(RTPMapAttribute::class)?.let {
+                        Timber.d("Found %s rtpmap %s", codec, it)
+                        media to it
                     }
-                    Timber.d("Update remote SDP line: %s", lines[i])
-                    sdpFormatUpdated = true
-                    break
                 }
-            }
-            return buildString {
-                lines.forEachIndexed { index, line ->
-                    append(line).append("\r\n")
-                    // Append new a=fmtp line if no such line exist for a codec.
-                    if (!sdpFormatUpdated && index == rtpmapLineIndex) {
-                        val bitrateSet = if (isVideoCodec) {
-                            "a=fmtp:$codecRtpMap $VIDEO_CODEC_PARAM_START_BITRATE=$bitrateKbps"
-                        } else {
-                            "a=fmtp:$codecRtpMap $AUDIO_CODEC_PARAM_BITRATE=${bitrateKbps * 1000}"
+                .forEach { (media, rtmp) ->
+                    // Check if a=fmtp string already exist in remote SDP for this codec and
+                    // update it with new bitrate parameter.
+                    media.getAttributes(FormatAttribute::class)
+                        .filter { it.format == rtmp.payloadType }
+                        .forEach {
+                            Timber.d("Found %s %s", codec, it)
+
+                            if (isVideoCodec) {
+                                it.addParameter(VIDEO_CODEC_PARAM_START_BITRATE, bitrateKbps)
+                            } else {
+                                it.addParameter(AUDIO_CODEC_PARAM_BITRATE, bitrateKbps * 1000)
+                            }
+                            Timber.d("Update remote SDP line: %s", it)
+                            return
                         }
-                        Timber.d("Add remote SDP line: %s", bitrateSet)
-                        append(bitrateSet).append("\r\n")
-                    }
                 }
-            }
         }
 
-        /** Returns the line number containing "m=audio|video", or -1 if no such line exists.  */
-        private fun findMediaDescriptionLine(isAudio: Boolean, sdpLines: List<String>): Int {
-            val mediaDescription = if (isAudio) "m=audio " else "m=video "
-            sdpLines.forEachIndexed { index, line ->
-                if (line.startsWith(mediaDescription)) {
-                    return index
-                }
-            }
-            return -1
-        }
-
-        private fun movePayloadTypesToFront(preferredPayloadTypes: List<String>, line: String): String? {
+        private fun movePayloadTypesToFront(preferredPayloadTypes: List<Int>, mediaDescription: SdpMediaDescription) {
             // The format of the media description line should be: m=<media> <port> <proto> <fmt> ...
-            val origLineParts = line.split(" ")
-            if (origLineParts.size <= 3) {
-                Timber.e("Wrong SDP media description format: %s", line)
-                return null
-            }
-            val header: List<String> = origLineParts.subList(0, 3)
-            val unpreferredPayloadTypes = origLineParts.subList(3, origLineParts.size).toMutableList()
-            unpreferredPayloadTypes.removeAll(preferredPayloadTypes)
+            val formats = mediaDescription.formats
             // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload types.
-            val newLineParts = arrayListOf<String>()
-            newLineParts.addAll(header)
-            newLineParts.addAll(preferredPayloadTypes)
-            newLineParts.addAll(unpreferredPayloadTypes)
-            return newLineParts.joinToString(" ")
+            formats.removeAll(preferredPayloadTypes)
+            formats.addAll(0, preferredPayloadTypes)
         }
 
-        private fun preferCodec(sdpDescription: String, codec: String, isAudio: Boolean): String {
-            val lines = sdpDescription.split("\r\n").toMutableList()
-            val lineIndex = findMediaDescriptionLine(isAudio, lines)
-            if (lineIndex == -1) {
+        private fun preferCodec(sdpDescription: SdpSessionDescription, codec: String, isAudio: Boolean) {
+            val type = if (isAudio) "audio" else "video"
+            val mediaDescription = sdpDescription.getMediaDescriptions().firstOrNull { it.type == type } ?: run {
                 Timber.w("No mediaDescription line, so can't prefer %s", codec)
-                return sdpDescription
+                return
             }
             // A list with all the payload types with name |codec|. The payload types are integers in the
             // range 96-127, but they are stored as strings here.
-            val codecPayloadTypes = arrayListOf<String>()
-            // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
-            val codecPattern = Pattern.compile("^a=rtpmap:(\\d+) $codec(/\\d+)+[\r]?$")
-            for (line in lines) {
-                val codecMatcher = codecPattern.matcher(line)
-                if (codecMatcher.matches()) {
-                    codecMatcher.group(1)?.also { codecPayloadTypes.add(it) }
-                }
-            }
+            val codecPayloadTypes = mediaDescription.getAttributes(RTPMapAttribute::class).filter { it.encodingName == codec }
+                .map { it.payloadType }
+                .toList()
+
             if (codecPayloadTypes.isEmpty()) {
                 Timber.w("No payload types with name %s", codec)
-                return sdpDescription
+                return
             }
-            val newLine = movePayloadTypesToFront(codecPayloadTypes, lines[lineIndex]) ?: return sdpDescription
-            Timber.d("Change media description from: %s to %s", lines[lineIndex], newLine)
-            lines[lineIndex] = newLine
-            return lines.joinToString("\r\n")
+            movePayloadTypesToFront(codecPayloadTypes, mediaDescription)
         }
     }
 
@@ -1139,7 +1082,6 @@ class PeerConnectionClient(
      * ownership of |eglBase|.
      */
     init {
-        dataChannelEnabled = peerConnectionParameters.dataChannelParameters != null
         Timber.d("Preferred video codec: %s", getSdpVideoCodecName(peerConnectionParameters))
         val fieldTrials = getFieldTrials(peerConnectionParameters)
         executor.execute {

@@ -32,10 +32,10 @@ android {
         }
     }
 
-    ndkVersion = Versions.ndk
-
     kotlinOptions {
         jvmTarget = "1.8"
+        apiVersion = "1.5"
+        languageVersion = "1.5"
     }
 
     compileOptions {
@@ -45,7 +45,9 @@ android {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk7", Versions.kotlin))
+    implementation(platform(Deps.kotlinBom))
+    implementation(platform(Deps.kotlinCoroutinesBom))
+    implementation(kotlin("stdlib"))
     implementation(Deps.appcompat)
     implementation(Deps.preference)
     implementation(Deps.androidXcore)

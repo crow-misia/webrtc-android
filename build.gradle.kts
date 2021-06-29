@@ -6,8 +6,7 @@ plugins {
 buildscript {
     repositories {
         google()
-        jcenter()
-        
+        mavenCentral()
     }
     dependencies {
         classpath(Deps.androidPlugin)
@@ -17,7 +16,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven(url = "https://jitpack.io")
     }
 }

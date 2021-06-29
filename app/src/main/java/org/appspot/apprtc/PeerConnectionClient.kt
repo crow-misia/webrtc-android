@@ -11,10 +11,12 @@ package org.appspot.apprtc
 
 import android.content.Context
 import android.os.ParcelFileDescriptor
-import io.github.zncmn.sdp.SdpMediaDescription
-import io.github.zncmn.sdp.SdpSessionDescription
-import io.github.zncmn.sdp.attribute.FormatAttribute
-import io.github.zncmn.sdp.attribute.RTPMapAttribute
+import io.github.crow_misia.sdp.SdpMediaDescription
+import io.github.crow_misia.sdp.SdpSessionDescription
+import io.github.crow_misia.sdp.attribute.FormatAttribute
+import io.github.crow_misia.sdp.attribute.RTPMapAttribute
+import io.github.crow_misia.sdp.getAttribute
+import io.github.crow_misia.sdp.getAttributes
 import org.appspot.apprtc.AppRTCClient.SignalingParameters
 import org.webrtc.*
 import org.webrtc.PeerConnection.*
@@ -583,7 +585,7 @@ class PeerConnectionClient(
         executor.execute {
             val peerConnection = peerConnection ?: return@execute
             if (!isError) {
-                Timber.d("PC Create OFFER")
+                Timber.d("PC create OFFER")
                 isInitiator = true
                 peerConnection.createOffer(sdpObserver, sdpMediaConstraints)
             }
@@ -909,7 +911,7 @@ class PeerConnectionClient(
             executor.execute {
                 val peerConnection = peerConnection ?: return@execute
                 if (!isError) {
-                    Timber.d("Set local SDP from %s", sdp.type)
+                    Timber.d("Set local SDP from %s: %s", sdp.type, sdp)
                     peerConnection.setLocalDescription(sdpObserver, sdp)
                 }
             }
@@ -926,12 +928,12 @@ class PeerConnectionClient(
                     // local SDP, then after receiving answer set remote SDP.
                     if (peerConnection.remoteDescription == null) {
                         // We've just set our local SDP so time to send it.
-                        Timber.d("Local SDP set succesfully")
+                        Timber.d("Local SDP set successfully")
                         localSdp?.also { events.onLocalDescription(it) }
                     } else {
                         // We've just set remote description, so drain remote
                         // and send local ICE candidates.
-                        Timber.d("Remote SDP set succesfully")
+                        Timber.d("Remote SDP set successfully")
                         drainCandidates()
                     }
                 } else {
@@ -940,12 +942,12 @@ class PeerConnectionClient(
                     if (peerConnection.localDescription == null) {
                         // We've just set remote SDP - do nothing for now -
                         // answer will be created soon.
-                        Timber.d("Remote SDP set succesfully")
+                        Timber.d("Remote SDP set successfully")
 
                     } else {
                         // We've just set our local SDP so time to send it, drain
                         // remote and send local ICE candidates.
-                        Timber.d("Local SDP set succesfully")
+                        Timber.d("Local SDP set successfully")
                         localSdp?.also { events.onLocalDescription(it) }
                         drainCandidates()
                     }
@@ -1025,7 +1027,7 @@ class PeerConnectionClient(
                 .mapNotNull { media ->
                     // Search for codec rtpmap in format
                     // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
-                    media.getAttribute(RTPMapAttribute::class)?.let {
+                    media.getAttribute<RTPMapAttribute>()?.let {
                         Timber.d("Found %s rtpmap %s", codec, it)
                         media to it
                     }
@@ -1033,7 +1035,7 @@ class PeerConnectionClient(
                 .forEach { (media, rtmp) ->
                     // Check if a=fmtp string already exist in remote SDP for this codec and
                     // update it with new bitrate parameter.
-                    media.getAttributes(FormatAttribute::class)
+                    media.getAttributes<FormatAttribute>()
                         .filter { it.format == rtmp.payloadType }
                         .forEach {
                             Timber.d("Found %s %s", codec, it)
@@ -1049,7 +1051,7 @@ class PeerConnectionClient(
                 }
         }
 
-        private fun movePayloadTypesToFront(preferredPayloadTypes: List<Int>, mediaDescription: SdpMediaDescription) {
+        private fun movePayloadTypesToFront(preferredPayloadTypes: List<String>, mediaDescription: SdpMediaDescription) {
             // The format of the media description line should be: m=<media> <port> <proto> <fmt> ...
             val formats = mediaDescription.formats
             // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload types.
@@ -1065,8 +1067,9 @@ class PeerConnectionClient(
             }
             // A list with all the payload types with name |codec|. The payload types are integers in the
             // range 96-127, but they are stored as strings here.
-            val codecPayloadTypes = mediaDescription.getAttributes(RTPMapAttribute::class).filter { it.encodingName == codec }
-                .map { it.payloadType }
+            val codecPayloadTypes = mediaDescription.getAttributes<RTPMapAttribute>()
+                .filter { it.encodingName == codec }
+                .map { it.payloadType.toString() }
                 .toList()
 
             if (codecPayloadTypes.isEmpty()) {

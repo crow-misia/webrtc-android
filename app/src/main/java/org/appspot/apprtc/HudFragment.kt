@@ -95,10 +95,10 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
                 val reportMap = getReportMap(report)
                 if (reportMap["googTrackId"]?.contains(PeerConnectionClient.VIDEO_TRACK_ID) == true) {
                     fps = reportMap["googFrameRateSent"]
-                    videoSendStat.appendln(report.id)
+                    videoSendStat.appendLine(report.id)
                     for (value in report.values) {
                         val name = value.name.replace("goog", "")
-                        videoSendStat.append(name).append("=").appendln(value.value)
+                        videoSendStat.append(name).append("=").appendLine(value.value)
                     }
                 }
             } else if (report.type == "ssrc" && report.id.contains("ssrc") && report.id.contains("recv")) {
@@ -106,10 +106,10 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
                 val reportMap = getReportMap(report)
                 // Check if this stat is for video track.
                 reportMap["googFrameWidthReceived"]?.also {
-                    videoRecvStat.appendln(report.id)
+                    videoRecvStat.appendLine(report.id)
                     for (value in report.values) {
                         val name = value.name.replace("goog", "")
-                        videoRecvStat.append(name).append("=").appendln(value.value)
+                        videoRecvStat.append(name).append("=").appendLine(value.value)
                     }
                 }
             } else if (report.id == "bweforvideo") {
@@ -117,19 +117,19 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
                 val reportMap = getReportMap(report)
                 targetBitrate = reportMap["googTargetEncBitrate"]
                 actualBitrate = reportMap["googActualEncBitrate"]
-                bweStat.appendln(report.id)
+                bweStat.appendLine(report.id)
                 for (value in report.values) {
                     val name = value.name.replace("goog", "").replace("Available", "")
-                    bweStat.append(name).append("=").appendln(value.value)
+                    bweStat.append(name).append("=").appendLine(value.value)
                 }
             } else if (report.type == "googCandidatePair") {
                 // Connection statistics.
                 val reportMap = getReportMap(report)
                 if (reportMap["googActiveConnection"] == "true") {
-                    connectionStat.appendln(report.id)
+                    connectionStat.appendLine(report.id)
                     for (value in report.values) {
                         val name = value.name.replace("goog", "")
-                        connectionStat.append(name).append("=").appendln(value.value)
+                        connectionStat.append(name).append("=").appendLine(value.value)
                     }
                 }
             }
@@ -139,9 +139,9 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
         hud_stat_video_send.text = videoSendStat.toString()
         hud_stat_video_recv.text = videoRecvStat.toString()
         if (videoCallEnabled) {
-            fps?.also { encoderStat.append("Fps:  ").appendln(it) }
-            targetBitrate?.also { encoderStat.append("Target BR: ").appendln(it) }
-            actualBitrate?.also { encoderStat.append("Actual BR: ").appendln(it) }
+            fps?.also { encoderStat.append("Fps:  ").appendLine(it) }
+            targetBitrate?.also { encoderStat.append("Target BR: ").appendLine(it) }
+            actualBitrate?.also { encoderStat.append("Actual BR: ").appendLine(it) }
         }
         cpuMonitor?.also {
             encoderStat.append("CPU%: ")

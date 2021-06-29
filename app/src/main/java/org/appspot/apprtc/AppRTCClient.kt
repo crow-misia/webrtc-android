@@ -88,7 +88,7 @@ interface AppRTCClient {
         /**
          * Callback fired once remote SDP is received.
          */
-        fun onRemoteDescription(sdp: SessionDescription)
+        fun onRemoteDescription(desc: SessionDescription)
 
         /**
          * Callback fired once remote Ice candidate is received.

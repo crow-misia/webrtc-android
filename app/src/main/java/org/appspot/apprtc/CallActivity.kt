@@ -600,12 +600,12 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         runOnUiThread { onConnectedToRoomInternal(params) }
     }
 
-    override fun onRemoteDescription(sdp: SessionDescription) {
+    override fun onRemoteDescription(desc: SessionDescription) {
         val delta = System.currentTimeMillis() - callStartedTimeMs
         runOnUiThread {
             peerConnectionClient?.also {
-                logAndToast("Received remote " + sdp.type + ", delay=" + delta + "ms")
-                it.setRemoteDescription(sdp)
+                logAndToast("Received remote " + desc.type + ", delay=" + delta + "ms")
+                it.setRemoteDescription(desc)
                 if (!signalingParameters.initiator) {
                     logAndToast("Creating ANSWER...")
                     // Create answer. Answer SDP will be sent to offering client in
@@ -613,7 +613,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
                     it.createAnswer()
                 }
             } ?: run {
-                Timber.e("Received remote SDP for non-initilized peer connection.")
+                Timber.e("Received remote SDP for non-initialized peer connection.")
             }
         }
     }
@@ -653,15 +653,15 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
     // Send local peer connection SDP and ICE candidates to remote party.
     // All callbacks are invoked from peer connection client looper thread and
     // are routed to UI thread.
-    override fun onLocalDescription(sdp: SessionDescription) {
+    override fun onLocalDescription(desc: SessionDescription) {
         val delta = System.currentTimeMillis() - callStartedTimeMs
         runOnUiThread {
             appRtcClient?.also {
-                logAndToast("Sending " + sdp.type + ", delay=" + delta + "ms")
+                logAndToast("Sending " + desc.type + ", delay=" + delta + "ms")
                 if (signalingParameters.initiator) {
-                    it.sendOfferSdp(sdp)
+                    it.sendOfferSdp(desc)
                 } else {
-                    it.sendAnswerSdp(sdp)
+                    it.sendAnswerSdp(desc)
                 }
             }
             if (peerConnectionParameters.videoMaxBitrate > 0) {

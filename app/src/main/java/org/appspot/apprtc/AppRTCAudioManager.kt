@@ -507,7 +507,12 @@ class AppRTCAudioManager internal constructor(
         // Create and initialize the proximity sensor.
         // Tablet devices (e.g. Nexus 7) does not support proximity sensors.
         // Note that, the sensor will not be active until start() has been called.
-        proximitySensor = AppRTCProximitySensor.create(context, Runnable { onProximitySensorChangedState() })
+        proximitySensor = AppRTCProximitySensor.create(context) {
+            // This method will be called each time a state change is detected.
+            // Example: user holds their hand over the device (closer than ~5 cm),
+            // or removes their hand from the device.
+            onProximitySensorChangedState()
+        }
         Timber.d("defaultAudioDevice: %s", defaultAudioDevice)
         logDeviceInfo()
     }

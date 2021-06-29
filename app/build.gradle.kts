@@ -14,6 +14,12 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     lintOptions {

@@ -86,8 +86,8 @@ class PeerConnectionClient(
     // remote peer after both local and remote description are set.
     private var queuedRemoteCandidates: MutableList<IceCandidate>? = null
     private var isInitiator = false
-    // either offer or answer SDP
-    private var localSdp: SessionDescription? = null
+    // either offer or answer description
+    private var localDescription: SessionDescription? = null
     private var videoCapturer: VideoCapturer? = null
 
     // enableVideo is set to true if video should be rendered and sent.
@@ -152,7 +152,7 @@ class PeerConnectionClient(
         /**
          * Callback fired once local SDP is created and set.
          */
-        fun onLocalDescription(sdp: SessionDescription)
+        fun onLocalDescription(desc: SessionDescription)
 
         /**
          * Callback fired once local Ice candidate is generated.
@@ -406,6 +406,7 @@ class PeerConnectionClient(
         }
 
         Timber.d("Create peer connection.")
+
         queuedRemoteCandidates = arrayListOf()
         val rtcConfig = RTCConfiguration(signalingParameters.iceServers).also {
             // TCP candidates are only useful when connecting to a server that supports
@@ -608,7 +609,15 @@ class PeerConnectionClient(
             val peerConnection = peerConnection ?: return@execute
             if (!isError) {
                 queuedRemoteCandidates?.add(candidate) ?: run {
-                    peerConnection.addIceCandidate(candidate)
+                    peerConnection.addIceCandidate(candidate, object : AddIceObserver {
+                        override fun onAddSuccess() {
+                            Timber.d("Candidate %s successfully added.", candidate)
+                        }
+
+                        override fun onAddFailure(error: String) {
+                            Timber.d("Candidate %s addition failed: %s", candidate, error)
+                        }
+                    })
                 }
             }
         }
@@ -627,24 +636,24 @@ class PeerConnectionClient(
         }
     }
 
-    fun setRemoteDescription(sdp: SessionDescription) {
+    fun setRemoteDescription(desc: SessionDescription) {
         executor.execute {
             val peerConnection = peerConnection ?: return@execute
             if (isError) {
                 return@execute
             }
-            val sdpDescription = SdpSessionDescription.parse(sdp.description)
+            val sdp = SdpSessionDescription.parse(desc.description)
             if (preferIsac) {
-                preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
+                preferCodec(sdp, AUDIO_CODEC_ISAC, true)
             }
             if (isVideoCallEnabled) {
-                preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
+                preferCodec(sdp, getSdpVideoCodecName(peerConnectionParameters), false)
             }
             if (peerConnectionParameters.audioStartBitrate > 0) {
-                setStartBitrate(sdpDescription, AUDIO_CODEC_OPUS, false, peerConnectionParameters.audioStartBitrate)
+                setStartBitrate(sdp, AUDIO_CODEC_OPUS, false, peerConnectionParameters.audioStartBitrate)
             }
             Timber.d("Set remote SDP.")
-            val sdpRemote = SessionDescription(sdp.type, sdpDescription.toString())
+            val sdpRemote = SessionDescription(desc.type, sdp.toString())
             peerConnection.setRemoteDescription(sdpObserver, sdpRemote)
         }
     }
@@ -758,7 +767,15 @@ class PeerConnectionClient(
         queuedRemoteCandidates?.also {
             Timber.d("Add %d remote candidates", it.size)
             for (candidate in it) {
-                peerConnection?.addIceCandidate(candidate)
+                peerConnection?.addIceCandidate(candidate, object : AddIceObserver {
+                    override fun onAddSuccess() {
+                        Timber.d("Candidate %s successfully added.", candidate)
+                    }
+
+                    override fun onAddFailure(error: String) {
+                        Timber.d("Candidate %s addition failed: %s", candidate, error)
+                    }
+                })
             }
             queuedRemoteCandidates = null
         }
@@ -894,25 +911,25 @@ class PeerConnectionClient(
     // Implementation detail: handle offer creation/signaling and answer setting,
     // as well as adding remote ICE candidates once the answer SDP is set.
     private inner class SDPObserver : SdpObserver {
-        override fun onCreateSuccess(origSdp: SessionDescription) {
-            if (localSdp != null) {
+        override fun onCreateSuccess(desc: SessionDescription) {
+            if (localDescription != null) {
                 reportError("Multiple SDP create.")
                 return
             }
-            val sdpDescription = SdpSessionDescription.parse(origSdp.description)
+            val sdp = SdpSessionDescription.parse(desc.description)
             if (preferIsac) {
-                preferCodec(sdpDescription, AUDIO_CODEC_ISAC, true)
+                preferCodec(sdp, AUDIO_CODEC_ISAC, true)
             }
             if (isVideoCallEnabled) {
-                preferCodec(sdpDescription, getSdpVideoCodecName(peerConnectionParameters), false)
+                preferCodec(sdp, getSdpVideoCodecName(peerConnectionParameters), false)
             }
-            val sdp = SessionDescription(origSdp.type, sdpDescription.toString())
-            localSdp = sdp
+            val newDesc = SessionDescription(desc.type, sdp.toString())
+            localDescription = newDesc
             executor.execute {
                 val peerConnection = peerConnection ?: return@execute
                 if (!isError) {
-                    Timber.d("Set local SDP from %s: %s", sdp.type, sdp)
-                    peerConnection.setLocalDescription(sdpObserver, sdp)
+                    Timber.d("Set local SDP from %s", desc.type)
+                    peerConnection.setLocalDescription(sdpObserver, newDesc)
                 }
             }
         }
@@ -929,7 +946,7 @@ class PeerConnectionClient(
                     if (peerConnection.remoteDescription == null) {
                         // We've just set our local SDP so time to send it.
                         Timber.d("Local SDP set successfully")
-                        localSdp?.also { events.onLocalDescription(it) }
+                        localDescription?.also { events.onLocalDescription(it) }
                     } else {
                         // We've just set remote description, so drain remote
                         // and send local ICE candidates.
@@ -943,12 +960,11 @@ class PeerConnectionClient(
                         // We've just set remote SDP - do nothing for now -
                         // answer will be created soon.
                         Timber.d("Remote SDP set successfully")
-
                     } else {
                         // We've just set our local SDP so time to send it, drain
                         // remote and send local ICE candidates.
                         Timber.d("Local SDP set successfully")
-                        localSdp?.also { events.onLocalDescription(it) }
+                        localDescription?.also { events.onLocalDescription(it) }
                         drainCandidates()
                     }
                 }
@@ -973,6 +989,8 @@ class PeerConnectionClient(
         private const val VIDEO_CODEC_H264 = "H264"
         private const val VIDEO_CODEC_H264_BASELINE = "H264 Baseline"
         private const val VIDEO_CODEC_H264_HIGH = "H264 High"
+        private const val VIDEO_CODEC_AV1 = "AV1"
+        private const val VIDEO_CODEC_AV1_SDP_CODEC_NAME = "AV1X"
         private const val AUDIO_CODEC_OPUS = "opus"
         private const val AUDIO_CODEC_ISAC = "ISAC"
         private const val VIDEO_CODEC_PARAM_START_BITRATE = "x-google-start-bitrate"
@@ -996,13 +1014,13 @@ class PeerConnectionClient(
         // Executor thread is started once in private ctor and is used for all
         // peer connection API calls to ensure new peer connection factory is
         // created on the same thread as previously destroyed factory.
-        private val executor =
-            Executors.newSingleThreadExecutor()
+        private val executor = Executors.newSingleThreadExecutor()
 
         private fun getSdpVideoCodecName(parameters: PeerConnectionParameters): String {
             return when (parameters.videoCodec) {
                 VIDEO_CODEC_VP8 -> VIDEO_CODEC_VP8
                 VIDEO_CODEC_VP9 -> VIDEO_CODEC_VP9
+                VIDEO_CODEC_AV1 -> VIDEO_CODEC_AV1_SDP_CODEC_NAME
                 VIDEO_CODEC_H264_HIGH, VIDEO_CODEC_H264_BASELINE -> VIDEO_CODEC_H264
                 else -> VIDEO_CODEC_VP8
             }
@@ -1022,8 +1040,8 @@ class PeerConnectionClient(
             }
         }
 
-        private fun setStartBitrate(sdpDescription: SdpSessionDescription, codec: String, isVideoCodec: Boolean, bitrateKbps: Int) {
-            sdpDescription.getMediaDescriptions()
+        private fun setStartBitrate(sdp: SdpSessionDescription, codec: String, isVideoCodec: Boolean, bitrateKbps: Int) {
+            sdp.getMediaDescriptions()
                 .mapNotNull { media ->
                     // Search for codec rtpmap in format
                     // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
@@ -1059,9 +1077,9 @@ class PeerConnectionClient(
             formats.addAll(0, preferredPayloadTypes)
         }
 
-        private fun preferCodec(sdpDescription: SdpSessionDescription, codec: String, isAudio: Boolean) {
+        private fun preferCodec(desc: SdpSessionDescription, codec: String, isAudio: Boolean) {
             val type = if (isAudio) "audio" else "video"
-            val mediaDescription = sdpDescription.getMediaDescriptions().firstOrNull { it.type == type } ?: run {
+            val mediaDescription = desc.getMediaDescriptions().firstOrNull { it.type == type } ?: run {
                 Timber.w("No mediaDescription line, so can't prefer %s", codec)
                 return
             }

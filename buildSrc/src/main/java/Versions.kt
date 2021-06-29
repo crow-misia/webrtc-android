@@ -6,7 +6,7 @@ object Versions {
     const val buildTools = "30.0.3"
     const val compileSdk = 30
     const val targetSdk = 30
-    const val minSdk = 16
+    const val minSdk = 21
 
     const val appcompat = "1.3.0"
     const val preference = "1.1.1"
@@ -16,6 +16,6 @@ object Versions {
     const val junit = "4.13.2"
     const val junitExt = "1.1.3-rc01"
     const val espresso = "3.4.0-rc01"
-    const val webrtc = "83.10.0"
+    const val webrtc = "92.4515.9.0"
     const val sdp = "1.0.0"
 }

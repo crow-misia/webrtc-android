@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    buildToolsVersion(Versions.buildTools)
-    compileSdkVersion(Versions.compileSdk)
+    buildToolsVersion = "31.0.0"
+    compileSdk = 31
     defaultConfig {
         applicationId = "org.appspot.apprtc"
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdk = 21
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +22,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         textReport = true
         textOutput("stdout")
     }
@@ -51,18 +51,16 @@ android {
 }
 
 dependencies {
-    implementation(platform(Deps.kotlinBom))
-    implementation(platform(Deps.kotlinCoroutinesBom))
-    implementation(kotlin("stdlib"))
-    implementation(Deps.appcompat)
-    implementation(Deps.preference)
-    implementation(Deps.androidXcore)
-    implementation(Deps.webrtc)
-    implementation(Deps.okhttp3)
-    implementation(Deps.timber)
-    implementation(Deps.sdp)
-    testImplementation(Deps.junit)
-    androidTestImplementation(Deps.junit)
-    androidTestImplementation(Deps.junitExt)
-    androidTestImplementation(Deps.espresso)
+    implementation(Kotlin.stdlib)
+    implementation(AndroidX.appCompat)
+    implementation(AndroidX.preferenceKtx)
+    implementation(AndroidX.core.ktx)
+    implementation(Square.OkHttp3.okHttp)
+    implementation(JakeWharton.timber)
+    implementation("com.github.crow-misia:libwebrtc-bin:_")
+    implementation("io.github.crow-misia.sdp:sdp:_")
+    testImplementation(Testing.junit4)
+    androidTestImplementation(Testing.junit4)
+    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.test.espresso.core)
 }

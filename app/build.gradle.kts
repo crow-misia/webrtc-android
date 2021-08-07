@@ -52,6 +52,8 @@ android {
 
 dependencies {
     implementation(Kotlin.stdlib)
+    implementation(KotlinX.coroutines.core)
+    implementation(KotlinX.coroutines.android)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.preferenceKtx)
     implementation(AndroidX.core.ktx)

@@ -11,15 +11,20 @@ package org.appspot.apprtc
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_hud.*
+import org.appspot.apprtc.databinding.FragmentHudBinding
 import org.webrtc.StatsReport
 
 /**
  * Fragment for HUD statistics display.
  */
-class HudFragment : Fragment(R.layout.fragment_hud) {
+class HudFragment : Fragment() {
+    private var _binding: FragmentHudBinding? = null
+    private val binding get() = _binding!!
+
     private var videoCallEnabled = false
     private var displayHud = false
 
@@ -32,11 +37,21 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
         } else null
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return FragmentHudBinding.inflate(inflater, container, false).also {
+            _binding = it
+        }.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_toggle_debug.setOnClickListener {
+        binding.buttonToggleDebug.setOnClickListener {
             if (displayHud) {
-                val visibility = if (hud_stat_bwe.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+                val visibility = if (binding.hudStatBwe.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
                 hudViewsSetProperties(visibility)
             }
         }
@@ -49,8 +64,8 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
             displayHud = it.getBoolean(CallActivity.EXTRA_DISPLAY_HUD, false)
         }
         val visibility = if (displayHud) View.VISIBLE else View.INVISIBLE
-        encoder_stat_call.visibility = visibility
-        button_toggle_debug.visibility = visibility
+        binding.encoderStatCall.visibility = visibility
+        binding.buttonToggleDebug.visibility = visibility
         hudViewsSetProperties(View.INVISIBLE)
         isRunning = true
         cpuMonitor?.resume()
@@ -62,15 +77,21 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
         super.onStop()
     }
 
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
+    }
+
     private fun hudViewsSetProperties(visibility: Int) {
-        hud_stat_bwe.visibility = visibility
-        hud_stat_connection.visibility = visibility
-        hud_stat_video_send.visibility = visibility
-        hud_stat_video_recv.visibility = visibility
-        hud_stat_bwe.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5f)
-        hud_stat_connection.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5f)
-        hud_stat_video_send.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5f)
-        hud_stat_video_recv.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5f)
+        listOf(
+            binding.hudStatBwe,
+            binding.hudStatConnection,
+            binding.hudStatVideoSend,
+            binding.hudStatVideoRecv,
+        ).forEach {
+            it.visibility = visibility
+            it.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5f)
+        }
     }
 
     private fun getReportMap(report: StatsReport): Map<String, String> {
@@ -134,10 +155,10 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
                 }
             }
         }
-        hud_stat_bwe.text = bweStat.toString()
-        hud_stat_connection.text = connectionStat.toString()
-        hud_stat_video_send.text = videoSendStat.toString()
-        hud_stat_video_recv.text = videoRecvStat.toString()
+        binding.hudStatBwe.text = bweStat.toString()
+        binding.hudStatConnection.text = connectionStat.toString()
+        binding.hudStatVideoSend.text = videoSendStat.toString()
+        binding.hudStatVideoRecv.text = videoRecvStat.toString()
         if (videoCallEnabled) {
             fps?.also { encoderStat.append("Fps:  ").appendLine(it) }
             targetBitrate?.also { encoderStat.append("Target BR: ").appendLine(it) }
@@ -151,6 +172,6 @@ class HudFragment : Fragment(R.layout.fragment_hud) {
                 .append(". Freq: ")
                 .append(it.getFrequencyScaleAverage())
         }
-        encoder_stat_call.text = encoderStat.toString()
+        binding.encoderStatCall.text = encoderStat.toString()
     }
 }

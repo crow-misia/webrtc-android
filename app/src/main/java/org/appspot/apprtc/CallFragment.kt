@@ -11,15 +11,20 @@ package org.appspot.apprtc
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_call.*
+import org.appspot.apprtc.databinding.FragmentCallBinding
 import org.webrtc.RendererCommon.ScalingType
 
 /**
  * Fragment for call control.
  */
-class CallFragment : Fragment(R.layout.fragment_call) {
+class CallFragment : Fragment() {
+    private var _binding: FragmentCallBinding? = null
+    private val binding get() = _binding!!
+
     private var callEvents: OnCallEvents? = null
     private var scalingType: ScalingType? = null
     private var videoCallEnabled = true
@@ -35,26 +40,36 @@ class CallFragment : Fragment(R.layout.fragment_call) {
         fun onToggleMic(): Boolean
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return FragmentCallBinding.inflate(inflater, container, false).also {
+            _binding = it
+        }.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Add buttons click events.
-        button_call_disconnect.setOnClickListener { callEvents?.onCallHangUp() }
-        button_call_switch_camera.setOnClickListener { callEvents?.onCameraSwitch() }
-        button_call_scaling_mode.setOnClickListener {
+        binding.buttonCallDisconnect.setOnClickListener { callEvents?.onCallHangUp() }
+        binding.buttonCallSwitchCamera.setOnClickListener { callEvents?.onCameraSwitch() }
+        binding.buttonCallScalingMode.setOnClickListener {
             scalingType = if (scalingType == ScalingType.SCALE_ASPECT_FILL) {
-                button_call_scaling_mode.setBackgroundResource(R.drawable.ic_action_full_screen)
+                binding.buttonCallScalingMode.setBackgroundResource(R.drawable.ic_action_full_screen)
                 ScalingType.SCALE_ASPECT_FIT
             } else {
-                button_call_scaling_mode.setBackgroundResource(R.drawable.ic_action_return_from_full_screen)
+                binding.buttonCallScalingMode.setBackgroundResource(R.drawable.ic_action_return_from_full_screen)
                 ScalingType.SCALE_ASPECT_FILL
             }
             callEvents?.onVideoScalingSwitch(scalingType)
         }
         scalingType = ScalingType.SCALE_ASPECT_FILL
-        button_call_toggle_mic.setOnClickListener {
+        binding.buttonCallToggleMic.setOnClickListener {
             val enabled = callEvents?.onToggleMic() ?: false
-            button_call_toggle_mic.alpha = if (enabled) 1.0f else 0.3f
+            binding.buttonCallToggleMic.alpha = if (enabled) 1.0f else 0.3f
         }
     }
 
@@ -63,25 +78,30 @@ class CallFragment : Fragment(R.layout.fragment_call) {
         var captureSliderEnabled = false
         arguments?.also {
             val contactName = it.getString(CallActivity.EXTRA_ROOMID)
-            contact_name_call.text = contactName
+            binding.contactNameCall.text = contactName
             videoCallEnabled = it.getBoolean(CallActivity.EXTRA_VIDEO_CALL, true)
             captureSliderEnabled = videoCallEnabled && it.getBoolean(CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED, false)
         }
         if (!videoCallEnabled) {
-            button_call_switch_camera.visibility = View.INVISIBLE
+            binding.buttonCallSwitchCamera.visibility = View.INVISIBLE
         }
         if (captureSliderEnabled) {
-            capture_format_slider_call.setOnSeekBarChangeListener(
-                CaptureQualityController(capture_format_text_call, callEvents)
+            binding.captureFormatSliderCall.setOnSeekBarChangeListener(
+                CaptureQualityController(binding.captureFormatTextCall, callEvents)
             )
         } else {
-            capture_format_text_call.visibility = View.GONE
-            capture_format_slider_call.visibility = View.GONE
+            binding.captureFormatTextCall.visibility = View.GONE
+            binding.captureFormatSliderCall.visibility = View.GONE
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callEvents = requireActivity() as OnCallEvents
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

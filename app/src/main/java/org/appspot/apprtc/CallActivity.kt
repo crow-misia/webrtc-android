@@ -27,11 +27,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import androidx.fragment.app.FragmentTransaction
-import kotlinx.android.synthetic.main.activity_call.*
 import org.appspot.apprtc.AppRTCAudioManager.AudioManagerEvents
 import org.appspot.apprtc.AppRTCClient.*
 import org.appspot.apprtc.CallFragment.OnCallEvents
 import org.appspot.apprtc.PeerConnectionClient.*
+import org.appspot.apprtc.databinding.ActivityCallBinding
 import org.webrtc.*
 import org.webrtc.RendererCommon.ScalingType
 import timber.log.Timber
@@ -41,9 +41,9 @@ import java.io.IOException
  * Activity for peer connection call setup, call waiting
  * and call view.
  */
-class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents, PeerConnectionEvents, OnCallEvents {
+class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents, OnCallEvents {
     private class ProxyVideoSink : VideoSink {
-        internal var target: VideoSink? = null
+        var target: VideoSink? = null
             @Synchronized
             set
 
@@ -56,6 +56,8 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
             }
         }
     }
+
+    private lateinit var binding: ActivityCallBinding
 
     private val remoteProxyRenderer = ProxyVideoSink()
     private val localProxyVideoSink = ProxyVideoSink()
@@ -87,6 +89,10 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
 
         super.onCreate(savedInstanceState)
 
+        binding = ActivityCallBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         Thread.setDefaultUncaughtExceptionHandler(UnhandledExceptionHandler(this))
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -102,15 +108,15 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         val listener = View.OnClickListener { toggleCallControlFragmentVisibility() }
 
         // Swap feeds on pip view click.
-        pip_video_view.setOnClickListener { setSwappedFeeds(!isSwappedFeeds) }
-        fullscreen_video_view.setOnClickListener(listener)
+        binding.pipVideoView.setOnClickListener { setSwappedFeeds(!isSwappedFeeds) }
+        binding.fullscreenVideoView.setOnClickListener(listener)
         remoteSinks.add(remoteProxyRenderer)
         val intent = intent
         val eglBase = EglBase.create()
 
         // Create video renderers.
-        pip_video_view.init(eglBase.eglBaseContext, null)
-        pip_video_view.setScalingType(ScalingType.SCALE_ASPECT_FIT)
+        binding.pipVideoView.init(eglBase.eglBaseContext, null)
+        binding.pipVideoView.setScalingType(ScalingType.SCALE_ASPECT_FIT)
         intent.getStringExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE)?.also { it ->
             // When saveRemoteVideoToFile is set we save the video from the remote to a file.
             val videoOutWidth = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, 0)
@@ -122,11 +128,15 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
                 throw RuntimeException("Failed to open video file for output: $it", e)
             }
         }
-        fullscreen_video_view.init(eglBase.eglBaseContext, null)
-        fullscreen_video_view.setScalingType(ScalingType.SCALE_ASPECT_FILL)
-        pip_video_view.setZOrderMediaOverlay(true)
-        pip_video_view.setEnableHardwareScaler(true)
-        fullscreen_video_view.setEnableHardwareScaler(false)
+        binding.fullscreenVideoView.also {
+            it.init(eglBase.eglBaseContext, null)
+            it.setScalingType(ScalingType.SCALE_ASPECT_FILL)
+            it.setEnableHardwareScaler(false)
+        }
+        binding.pipVideoView.also {
+            it.setZOrderMediaOverlay(true)
+            it.setEnableHardwareScaler(true)
+        }
         // Start with local feed in fullscreen and swap it to the pip when the call is connected.
         setSwappedFeeds(true)
 
@@ -248,7 +258,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         }
     }
 
-    @TargetApi(17)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun getDisplayMetrics(): DisplayMetrics? {
         val windowManager: WindowManager = application.getSystemService() ?: return null
         val displayMetrics = DisplayMetrics()
@@ -256,7 +266,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         return displayMetrics
     }
 
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startScreenCapture() {
         val mediaProjectionManager: MediaProjectionManager = application.getSystemService() ?: return
         startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), CAPTURE_PERMISSION_REQUEST_CODE)
@@ -311,7 +321,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         return null
     }
 
-    @TargetApi(21)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun createScreenCapturer(): VideoCapturer? {
         if (mediaProjectionPermissionResultCode != RESULT_OK) {
             reportError("User didn't give permission to capture the screen.")
@@ -364,7 +374,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
     }
 
     override fun onVideoScalingSwitch(scalingType: ScalingType?) {
-        fullscreen_video_view.setScalingType(scalingType)
+        binding.fullscreenVideoView.setScalingType(scalingType)
     }
 
     override fun onCaptureFormatChange(width: Int, height: Int, framerate: Int) {
@@ -462,12 +472,12 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         appRtcClient?.disconnectFromRoom()
         appRtcClient = null
 
-        pip_video_view.release()
+        binding.pipVideoView.release()
 
         videoFileRenderer?.release()
         videoFileRenderer = null
 
-        fullscreen_video_view.release()
+        binding.fullscreenVideoView.release()
 
         peerConnectionClient?.close()
         peerConnectionClient = null
@@ -556,10 +566,13 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
     private fun setSwappedFeeds(isSwappedFeeds: Boolean) {
         Timber.d("setSwappedFeeds: $isSwappedFeeds")
         this.isSwappedFeeds = isSwappedFeeds
-        localProxyVideoSink.target = if (isSwappedFeeds) fullscreen_video_view else pip_video_view
-        remoteProxyRenderer.target = if (isSwappedFeeds) pip_video_view else fullscreen_video_view
-        fullscreen_video_view.setMirror(isSwappedFeeds)
-        pip_video_view.setMirror(!isSwappedFeeds)
+        val fullscreenViewView = binding.fullscreenVideoView
+        val pipViewView = binding.pipVideoView
+
+        localProxyVideoSink.target = if (isSwappedFeeds) fullscreenViewView else pipViewView
+        remoteProxyRenderer.target = if (isSwappedFeeds) pipViewView else fullscreenViewView
+        fullscreenViewView.setMirror(isSwappedFeeds)
+        pipViewView.setMirror(!isSwappedFeeds)
     }
 
     // -----Implementation of AppRTCClient.AppRTCSignalingEvents ---------------
@@ -781,13 +794,7 @@ class CallActivity : AppCompatActivity(R.layout.activity_call), SignalingEvents,
         private var mediaProjectionPermissionResultData: Intent? = null
         private var mediaProjectionPermissionResultCode = 0
 
-        @get:TargetApi(Build.VERSION_CODES.KITKAT)
-        private val systemUiVisibility by lazy {
-            var flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                flags = flags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
-            flags
-        }
+        private const val systemUiVisibility =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
 }

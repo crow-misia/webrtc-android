@@ -33,7 +33,7 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import kotlinx.android.synthetic.main.activity_connect.*
+import org.appspot.apprtc.databinding.ActivityConnectBinding
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -42,7 +42,9 @@ import java.util.*
 /**
  * Handles the initial setup where the user selects which room to join.
  */
-class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
+class ConnectActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityConnectBinding
+
     private val sharedPref: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private val keyprefResolution: String by lazy { getString(R.string.pref_resolution_key) }
     private val keyprefFps: String by lazy { getString(R.string.pref_fps_key) }
@@ -59,22 +61,28 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding = ActivityConnectBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         // Get setting keys.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
-        room_edittext.setOnEditorActionListener(OnEditorActionListener { _, i, _ ->
+        binding.roomEdittext.setOnEditorActionListener(OnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-                add_favorite_button.performClick()
+                binding.addFavoriteButton.performClick()
                 return@OnEditorActionListener true
             }
             false
         })
-        room_edittext.requestFocus()
-        room_listview.emptyView = findViewById(android.R.id.empty)
-        room_listview.onItemClickListener = roomListClickListener
-        registerForContextMenu(room_listview)
-        connect_button.setOnClickListener(connectListener)
-        add_favorite_button.setOnClickListener(addFavoriteListener)
+        binding.roomEdittext.requestFocus()
+        binding.roomListview.also {
+            it.emptyView = findViewById(android.R.id.empty)
+            it.onItemClickListener = roomListClickListener
+            registerForContextMenu(it)
+        }
+        binding.connectButton.setOnClickListener(connectListener)
+        binding.addFavoriteButton.setOnClickListener(addFavoriteListener)
         requestPermissions()
     }
 
@@ -127,7 +135,7 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
 
     public override fun onPause() {
         super.onPause()
-        val room = room_edittext.text.toString()
+        val room = binding.roomEdittext.text.toString()
         val roomListJson = JSONArray(roomList).toString()
         val editor = sharedPref.edit()
         editor.putString(keyprefRoom, room)
@@ -138,7 +146,7 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
     public override fun onResume() {
         super.onResume()
         val room = sharedPref.getString(keyprefRoom, "")
-        room_edittext.setText(room)
+        binding.roomEdittext.setText(room)
         roomList.clear()
         sharedPref.getString(keyprefRoomList, null)?.also {
             try {
@@ -151,10 +159,12 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
             }
         }
         adapter.notifyDataSetChanged()
-        room_listview.adapter = adapter
-        if (adapter.count > 0) {
-            room_listview.requestFocus()
-            room_listview.setItemChecked(0, true)
+        binding.roomListview.also {
+            it.adapter = adapter
+            if (adapter.count > 0) {
+                it.requestFocus()
+                it.setItemChecked(0, true)
+            }
         }
     }
 
@@ -191,6 +201,8 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
                 // All permissions granted.
                 onPermissionsGranted()
             }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
@@ -635,7 +647,7 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
     }
     private val addFavoriteListener =
         View.OnClickListener {
-            val newRoom = room_edittext.text.toString()
+            val newRoom = binding.roomEdittext.text.toString()
             if (newRoom.isNotEmpty() && !roomList.contains(newRoom)) {
                 adapter.add(newRoom)
                 adapter.notifyDataSetChanged()
@@ -644,7 +656,7 @@ class ConnectActivity : AppCompatActivity(R.layout.activity_connect) {
     private val connectListener =
         View.OnClickListener {
             connectToRoom(
-                roomId = room_edittext.text.toString(),
+                roomId = binding.roomEdittext.text.toString(),
                 commandLineRun = false,
                 loopback = false,
                 useValuesFromIntent = false,

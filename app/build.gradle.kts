@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 android {
@@ -20,6 +19,10 @@ android {
             // libraries Gradle should build and package with your APK.
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     lint {
@@ -54,7 +57,11 @@ dependencies {
     implementation(Kotlin.stdlib)
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.android)
+    implementation(AndroidX.archCore.runtime)
     implementation(AndroidX.appCompat)
+    implementation(AndroidX.activityKtx)
+    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.fragmentKtx)
     implementation(AndroidX.preferenceKtx)
     implementation(AndroidX.core.ktx)
     implementation(Square.OkHttp3.okHttp)

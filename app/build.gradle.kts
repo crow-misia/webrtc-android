@@ -42,19 +42,19 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
         apiVersion = "1.5"
         languageVersion = "1.5"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    implementation(Kotlin.stdlib)
+    implementation(Kotlin.stdlib.jdk8)
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.android)
     implementation(AndroidX.archCore.runtime)
@@ -64,6 +64,11 @@ dependencies {
     implementation(AndroidX.fragmentKtx)
     implementation(AndroidX.preferenceKtx)
     implementation(AndroidX.core.ktx)
+    implementation(AndroidX.lifecycle.runtimeKtx)
+    implementation(AndroidX.lifecycle.liveDataKtx)
+    implementation(AndroidX.lifecycle.liveDataCoreKtx)
+    implementation(AndroidX.lifecycle.viewModelKtx)
+    implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(Square.OkHttp3.okHttp)
     implementation(JakeWharton.timber)
     implementation("com.github.crow-misia:libwebrtc-bin:_")

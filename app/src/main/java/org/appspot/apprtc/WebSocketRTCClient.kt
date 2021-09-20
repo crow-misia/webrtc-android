@@ -36,13 +36,14 @@ import timber.log.Timber
  * Messages to other party (with local Ice candidates and answer SDP) can
  * be sent after WebSocket connection is established.
  */
-class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, WebSocketChannelEvents {
+class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient,
+    WebSocketChannelEvents {
     private enum class ConnectionState {
-        NEW, CONNECTED, CLOSED, ERROR
+        NEW, CONNECTED, CLOSED, ERROR,
     }
 
     private enum class MessageType {
-        MESSAGE, LEAVE
+        MESSAGE, LEAVE,
     }
 
     private val handler: Handler
@@ -104,22 +105,24 @@ class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, We
                 + getQueryString(connectionParameters))
     }
 
-    private fun getMessageUrl(connectionParameters: RoomConnectionParameters, signalingParameters: SignalingParameters): String {
+    private fun getMessageUrl(
+        connectionParameters: RoomConnectionParameters,
+        signalingParameters: SignalingParameters
+    ): String {
         return (connectionParameters.roomUrl + "/" + ROOM_MESSAGE + "/" + connectionParameters.roomId
                 + "/" + signalingParameters.clientId + getQueryString(connectionParameters))
     }
 
-    private fun getLeaveUrl(connectionParameters: RoomConnectionParameters, signalingParameters: SignalingParameters): String {
+    private fun getLeaveUrl(
+        connectionParameters: RoomConnectionParameters,
+        signalingParameters: SignalingParameters
+    ): String {
         return (connectionParameters.roomUrl + "/" + ROOM_LEAVE + "/" + connectionParameters.roomId + "/"
                 + signalingParameters.clientId + getQueryString(connectionParameters))
     }
 
     private fun getQueryString(connectionParameters: RoomConnectionParameters): String {
-        return if (connectionParameters.urlParameters != null) {
-            "?" + connectionParameters.urlParameters
-        } else {
-            ""
-        }
+        return connectionParameters.urlParameters?.let { "?$it" }.orEmpty()
     }
 
     // Callback issued when room parameters are extracted. Runs on local
@@ -266,11 +269,18 @@ class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, We
                     }
                     "remove-candidates" -> {
                         val candidateArray = json.getJSONArray("candidates")
-                        events.onRemoteIceCandidatesRemoved(candidateArray.toList { toJavaCandidate(it) })
+                        events.onRemoteIceCandidatesRemoved(candidateArray.toList {
+                            toJavaCandidate(
+                                it
+                            )
+                        })
                     }
                     "answer" -> {
                         if (initiator) {
-                            val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
+                            val sdp = SessionDescription(
+                                SessionDescription.Type.fromCanonicalForm(type),
+                                json.getString("sdp")
+                            )
                             events.onRemoteDescription(sdp)
                         } else {
                             reportError("Received answer for call initiator: $message")
@@ -278,7 +288,10 @@ class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, We
                     }
                     "offer" -> {
                         if (!initiator) {
-                            val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
+                            val sdp = SessionDescription(
+                                SessionDescription.Type.fromCanonicalForm(type),
+                                json.getString("sdp")
+                            )
                             events.onRemoteDescription(sdp)
                         } else {
                             reportError("Received offer for call receiver: $message")
@@ -332,26 +345,25 @@ class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, We
             }
         }
         Timber.d("C->GAE: %s", logInfo)
-        val httpConnection =
-            AsyncHttpURLConnection("POST", url, message, object : AsyncHttpEvents {
-                override fun onHttpError(errorMessage: String) {
-                    reportError("GAE POST error: $errorMessage")
-                }
+        val httpConnection = AsyncHttpURLConnection("POST", url, message, object : AsyncHttpEvents {
+            override fun onHttpError(errorMessage: String) {
+                reportError("GAE POST error: $errorMessage")
+            }
 
-                override fun onHttpComplete(response: String) {
-                    if (messageType == MessageType.MESSAGE) {
-                        try {
-                            val roomJson = JSONObject(response)
-                            val result = roomJson.getString("result")
-                            if (result != "SUCCESS") {
-                                reportError("GAE POST error: $result")
-                            }
-                        } catch (e: JSONException) {
-                            reportError("GAE POST JSON error: $e")
+            override fun onHttpComplete(response: String) {
+                if (messageType == MessageType.MESSAGE) {
+                    try {
+                        val roomJson = JSONObject(response)
+                        val result = roomJson.getString("result")
+                        if (result != "SUCCESS") {
+                            reportError("GAE POST error: $result")
                         }
+                    } catch (e: JSONException) {
+                        reportError("GAE POST JSON error: $e")
                     }
                 }
-            })
+            }
+        })
         httpConnection.send()
     }
 
@@ -378,7 +390,7 @@ class WebSocketRTCClient(private val events: SignalingEvents) : AppRTCClient, We
         private const val ROOM_MESSAGE = "message"
         private const val ROOM_LEAVE = "leave"
 
-        // Put a |key|->|value| mapping in |json|.
+        // Put a `key`->`value` mapping in `json`.
         private fun jsonPut(json: JSONObject, key: String, value: Any) {
             try {
                 json.put(key, value)

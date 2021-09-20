@@ -20,14 +20,16 @@ import timber.log.Timber
 object AppRTCUtils {
     /** Helper method for building a string of thread information. */
     @JvmStatic
-    fun getThreadInfo(): String = "@[name=" + Thread.currentThread().name + ", id=" + Thread.currentThread().id + "]"
+    fun getThreadInfo(): String =
+        "@[name=" + Thread.currentThread().name + ", id=" + Thread.currentThread().id + "]"
 
     /** Information about the current build, taken from system properties.  */
     @JvmStatic
     fun logDeviceInfo() {
-        Timber.d("Android SDK: %d, Release: %s, Brand: %s, Device: %s, Id: %s, Hardware: %s, Manufacturer: %s, Model: %s, Product: %s",
+        Timber.d(
+            "Android SDK: %d, Release: %s, Brand: %s, Device: %s, Id: %s, Hardware: %s, Manufacturer: %s, Model: %s, Product: %s",
             Build.VERSION.SDK_INT, Build.VERSION.RELEASE, Build.BRAND, Build.DEVICE,
-            Build.ID, Build.HARDWARE, Build.MANUFACTURER, Build.MODEL, Build.PRODUCT
+            Build.ID, Build.HARDWARE, Build.MANUFACTURER, Build.MODEL, Build.PRODUCT,
         )
     }
 }

@@ -73,9 +73,7 @@ import java.util.concurrent.TimeUnit
  * jumping up and back down we might create faulty CPU load readings.
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
-internal class CpuMonitor(context: Context) {
-    private val appContext: Context
-
+internal class CpuMonitor(private val context: Context) {
     // User CPU usage at current frequency.
     private val userCpuUsage: MovingAverage
 
@@ -99,7 +97,7 @@ internal class CpuMonitor(context: Context) {
     private var curFreqScales: DoubleArray = doubleArrayOf()
     private var lastProcStat: ProcStat = ProcStat(0, 0, 0)
 
-    private class ProcStat internal constructor(
+    private class ProcStat(
         val userTime: Long,
         val systemTime: Long,
         val idleTime: Long
@@ -188,7 +186,7 @@ internal class CpuMonitor(context: Context) {
         executor = null
         val executor = Executors.newSingleThreadScheduledExecutor()
         // Prevent downstream linter warnings.
-        val possiblyIgnoredError: Future<*> = executor.scheduleAtFixedRate(
+        val possiblyIgnoredError = executor.scheduleAtFixedRate(
             { cpuUtilizationTask() },
             0,
             CPU_STAT_SAMPLE_PERIOD_MS.toLong(),
@@ -209,13 +207,14 @@ internal class CpuMonitor(context: Context) {
 
     private fun init() {
         try {
-            FileInputStream("/sys/devices/system/cpu/present").bufferedReader(Charsets.UTF_8).use { reader ->
-                Scanner(reader).useDelimiter("[-\n]").use { scanner ->
-                    scanner.nextInt() // Skip leading number 0.
-                    cpusPresent = 1 + scanner.nextInt()
-                    scanner.close()
+            FileInputStream("/sys/devices/system/cpu/present").bufferedReader(Charsets.UTF_8)
+                .use { reader ->
+                    Scanner(reader).useDelimiter("[-\n]").use { scanner ->
+                        scanner.nextInt() // Skip leading number 0.
+                        cpusPresent = 1 + scanner.nextInt()
+                        scanner.close()
+                    }
                 }
-            }
         } catch (e: FileNotFoundException) {
             Timber.e("Cannot do CPU stats since /sys/devices/system/cpu/present is missing")
         } catch (e: IOException) {
@@ -252,10 +251,11 @@ internal class CpuMonitor(context: Context) {
     private fun getBatteryLevel(): Int {
         // Use sticky broadcast with null receiver to read battery level once only.
         var batteryLevel = 0
-        appContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))?.also {
+        context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))?.also {
             val batteryScale = it.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
             if (batteryScale > 0) {
-                batteryLevel = (100f * it.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) / batteryScale).toInt()
+                batteryLevel =
+                    (100f * it.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) / batteryScale).toInt()
             }
         }
         return batteryLevel
@@ -352,7 +352,8 @@ internal class CpuMonitor(context: Context) {
         userCpuUsage.addValue(currentUserCpuUsage)
         val currentSystemCpuUsage = diffSystemTime / allTime.toDouble()
         systemCpuUsage.addValue(currentSystemCpuUsage)
-        val currentTotalCpuUsage = (currentUserCpuUsage + currentSystemCpuUsage) * currentFrequencyScale
+        val currentTotalCpuUsage =
+            (currentUserCpuUsage + currentSystemCpuUsage) * currentFrequencyScale
         totalCpuUsage.addValue(currentTotalCpuUsage)
 
         // Save new measurements for next round's deltas.
@@ -460,8 +461,7 @@ internal class CpuMonitor(context: Context) {
         private const val CPU_STAT_SAMPLE_PERIOD_MS = 2000
         private const val CPU_STAT_LOG_PERIOD_MS = 6000
         fun isSupported(): Boolean {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.N
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.N
         }
     }
 
@@ -470,7 +470,6 @@ internal class CpuMonitor(context: Context) {
             throw RuntimeException("CpuMonitor is not supported on this Android version.")
         }
         Timber.d("CpuMonitor ctor.")
-        appContext = context.applicationContext
         userCpuUsage = MovingAverage(MOVING_AVERAGE_SAMPLES)
         systemCpuUsage = MovingAverage(MOVING_AVERAGE_SAMPLES)
         totalCpuUsage = MovingAverage(MOVING_AVERAGE_SAMPLES)

@@ -39,7 +39,8 @@ class RtcEventLog(private val peerConnection: PeerConnection) {
         }
 
         // Passes ownership of the file to WebRTC.
-        val success = peerConnection.startRtcEventLog(fileDescriptor.detachFd(), OUTPUT_FILE_MAX_BYTES)
+        val success =
+            peerConnection.startRtcEventLog(fileDescriptor.detachFd(), OUTPUT_FILE_MAX_BYTES)
         if (success) {
             state = RtcEventLogState.STARTED
             Timber.d("RtcEventLog started.")

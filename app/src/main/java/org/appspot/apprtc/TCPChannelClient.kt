@@ -38,7 +38,7 @@ class TCPChannelClient(
     private val executor: ExecutorService,
     private val eventListener: TCPChannelEvents,
     ip: String?,
-    port: Int
+    port: Int,
 ) {
     private val executorThreadCheck: ThreadUtils.ThreadChecker = ThreadUtils.ThreadChecker()
     private var socket: TCPSocket? = null
@@ -85,7 +85,7 @@ class TCPChannelClient(
      * Base class for server and client sockets. Contains a listening thread that will call
      * eventListener.onTCPMessage on new messages.
      */
-    private abstract inner class TCPSocket internal constructor() : Thread() {
+    private abstract inner class TCPSocket : Thread() {
         // Lock for editing out and rawSocket
         protected val rawSocketLock = ReentrantLock()
         private var out: BufferedWriter? = null
@@ -249,7 +249,6 @@ class TCPChannelClient(
 
     private inner class TCPSocketClient(private val address: InetAddress, private val port: Int) :
         TCPSocket() {
-
         /** Connects to the peer.  */
         override fun connect(): Socket? {
             Timber.d("Connecting to [%s]:%d", address.hostAddress, port)

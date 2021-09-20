@@ -14,7 +14,6 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Build
 import org.appspot.apprtc.util.AppRTCUtils.getThreadInfo
 import org.webrtc.ThreadUtils
 import timber.log.Timber
@@ -30,11 +29,11 @@ import timber.log.Timber
  */
 class AppRTCProximitySensor private constructor(
     context: Context,
-    private val onSensorStateListener: Runnable
+    private val onSensorStateListener: Runnable,
 ) : SensorEventListener {
     // This class should be created, started and stopped on one thread
-    // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
-    // the case. Only active when |DEBUG| is set to true.
+    // (e.g. the main thread). We use `nonThreadSafe` to ensure that this is
+    // the case. Only active when `DEBUG` is set to true.
     private val threadChecker = ThreadUtils.ThreadChecker()
     private val sensorManager by lazy { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     private var proximitySensor: Sensor? = null
@@ -94,8 +93,10 @@ class AppRTCProximitySensor private constructor(
         // Report about new state to listening client. Client can then call
         // sensorReportsNearState() to query the current state (NEAR or FAR).
         onSensorStateListener.run()
-        Timber.d("onSensorChanged%s: accuracy=%d, timestamp=%d, distance=%f",
-            getThreadInfo(), event.accuracy, event.timestamp, event.values[0])
+        Timber.d(
+            "onSensorChanged%s: accuracy=%d, timestamp=%d, distance=%f",
+            getThreadInfo(), event.accuracy, event.timestamp, event.values[0]
+        )
     }
 
     /**
@@ -118,24 +119,20 @@ class AppRTCProximitySensor private constructor(
     /** Helper method for logging information about the proximity sensor.  */
     private fun logProximitySensorInfo() {
         val proximitySensor = proximitySensor ?: return
-        val info = StringBuilder("Proximity sensor: ")
-        info.append("name=").append(proximitySensor.name)
-        info.append(", vendor: ").append(proximitySensor.vendor)
-        info.append(", power: ").append(proximitySensor.power)
-        info.append(", resolution: ").append(proximitySensor.resolution)
-        info.append(", max range: ").append(proximitySensor.maximumRange)
-        info.append(", min delay: ").append(proximitySensor.minDelay)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            // Added in API level 20.
-            info.append(", type: ").append(proximitySensor.stringType)
+        val info = buildString {
+            append("Proximity sensor: ")
+            append("name=").append(proximitySensor.name)
+            append(", vendor: ").append(proximitySensor.vendor)
+            append(", power: ").append(proximitySensor.power)
+            append(", resolution: ").append(proximitySensor.resolution)
+            append(", max range: ").append(proximitySensor.maximumRange)
+            append(", min delay: ").append(proximitySensor.minDelay)
+            append(", type: ").append(proximitySensor.stringType)
+            append(", max delay: ").append(proximitySensor.maxDelay)
+            append(", reporting mode: ").append(proximitySensor.reportingMode)
+            append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Added in API level 21.
-            info.append(", max delay: ").append(proximitySensor.maxDelay)
-            info.append(", reporting mode: ").append(proximitySensor.reportingMode)
-            info.append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor)
-        }
-        Timber.d(info.toString())
+        Timber.d(info)
     }
 
     companion object {

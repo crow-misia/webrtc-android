@@ -9,6 +9,7 @@
  */
 package org.appspot.apprtc
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -29,7 +30,7 @@ import timber.log.Timber
  * AppRTCAudioManager manages all audio related parts of the AppRTC demo.
  */
 class AppRTCAudioManager internal constructor(
-    private val context: Context
+    private val context: Context,
 ) {
     /**
      * AudioDevice is the names of possible audio devices that we currently
@@ -47,7 +48,10 @@ class AppRTCAudioManager internal constructor(
     /** Selected audio device change event.  */
     interface AudioManagerEvents {
         // Callback fired once audio device is changed or list of available audio devices changed.
-        fun onAudioDeviceChanged(selectedAudioDevice: AudioDevice?, availableAudioDevices: Set<AudioDevice>)
+        fun onAudioDeviceChanged(
+            selectedAudioDevice: AudioDevice?,
+            availableAudioDevices: Set<AudioDevice>
+        )
     }
 
     private val audioManager: AudioManager = requireNotNull(context.getSystemService())
@@ -66,7 +70,7 @@ class AppRTCAudioManager internal constructor(
     // This device is changed automatically using a certain scheme where e.g.
     // a wired headset "wins" over speaker phone. It is also possible for a
     // user to explicitly select a device (and overrid any predefined scheme).
-    // See |userSelectedAudioDevice| for details.
+    // See `userSelectedAudioDevice` for details.
     private var selectedAudioDevice: AudioDevice? = null
 
     // Contains the user-selected audio device which overrides the predefined
@@ -129,11 +133,13 @@ class AppRTCAudioManager internal constructor(
             val state = intent.getIntExtra("state", STATE_UNPLUGGED)
             val microphone = intent.getIntExtra("microphone", HAS_NO_MIC)
             val name = intent.getStringExtra("name")
-            Timber.d("WiredHeadsetReceiver.onReceive%s: a=%s, s=%s, m=%s, n=%s, sb=%b",
+            Timber.d(
+                "WiredHeadsetReceiver.onReceive%s: a=%s, s=%s, m=%s, n=%s, sb=%b",
                 getThreadInfo(), intent.action,
                 if (state == STATE_UNPLUGGED) "unplugged" else "plugged",
                 if (microphone == HAS_MIC) "mic" else "no mic",
-                name, isInitialStickyBroadcast)
+                name, isInitialStickyBroadcast
+            )
             hasWiredHeadset = state == STATE_PLUGGED
             updateAudioDeviceState()
         }
@@ -162,7 +168,7 @@ class AppRTCAudioManager internal constructor(
         audioFocusChangeListener = OnAudioFocusChangeListener { focusChange ->
 
             // Called on the listener to notify if the audio focus for this listener has been changed.
-            // The |focusChange| value indicates whether the focus was gained, whether the focus was lost,
+            // The `focusChange` value indicates whether the focus was gained, whether the focus was lost,
             // and whether that loss is transient, or whether the new focus holder will hold it for an
             // unknown amount of time.
             // TODO(henrika): possibly extend support of handling audio-focus changes. Only contains
@@ -220,6 +226,7 @@ class AppRTCAudioManager internal constructor(
     }
 
     // TODO(henrika): audioManager.abandonAudioFocus() is deprecated.
+    @SuppressLint("WrongConstant")
     fun stop() {
         Timber.d("stop")
         ThreadUtils.checkIsOnMainThread()
@@ -344,6 +351,7 @@ class AppRTCAudioManager internal constructor(
      * only use it as an early indicator (during initialization) of an attached
      * wired headset.
      */
+    @SuppressLint("WrongConstant")
     @Deprecated("")
     private fun hasWiredHeadset(): Boolean {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -353,10 +361,10 @@ class AppRTCAudioManager internal constructor(
             for (device in devices) {
                 val type = device.type
                 if (type == AudioDeviceInfo.TYPE_WIRED_HEADSET) {
-                    Timber.d( "hasWiredHeadset: found wired headset")
+                    Timber.d("hasWiredHeadset: found wired headset")
                     return true
                 } else if (type == AudioDeviceInfo.TYPE_USB_DEVICE) {
-                    Timber.d( "hasWiredHeadset: found USB audio device")
+                    Timber.d("hasWiredHeadset: found USB audio device")
                     return true
                 }
             }
@@ -370,8 +378,17 @@ class AppRTCAudioManager internal constructor(
      */
     fun updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread()
-        Timber.d("--- updateAudioDeviceState: wired headset=%s, BT state=%s", hasWiredHeadset, bluetoothManager.state)
-        Timber.d("Device status: available=%s, selected=%s, user selected=%s", audioDevices, selectedAudioDevice, userSelectedAudioDevice)
+        Timber.d(
+            "--- updateAudioDeviceState: wired headset=%s, BT state=%s",
+            hasWiredHeadset,
+            bluetoothManager.state
+        )
+        Timber.d(
+            "Device status: available=%s, selected=%s, user selected=%s",
+            audioDevices,
+            selectedAudioDevice,
+            userSelectedAudioDevice
+        )
 
         // Check if any Bluetooth headset is connected. The internal BT state will
         // change accordingly.
@@ -420,18 +437,25 @@ class AppRTCAudioManager internal constructor(
 
         // Need to start Bluetooth if it is available and user either selected it explicitly or
         // user did not select any output device.
-        val needBluetoothAudioStart = (bluetoothManager.state == AppRTCBluetoothManager.State.HEADSET_AVAILABLE
-                && (userSelectedAudioDevice == AudioDevice.NONE
-                || userSelectedAudioDevice == AudioDevice.BLUETOOTH))
+        val needBluetoothAudioStart =
+            (bluetoothManager.state == AppRTCBluetoothManager.State.HEADSET_AVAILABLE
+                    && (userSelectedAudioDevice == AudioDevice.NONE
+                    || userSelectedAudioDevice == AudioDevice.BLUETOOTH))
 
         // Need to stop Bluetooth audio if user selected different device and
         // Bluetooth SCO connection is established or in the process.
-        val needBluetoothAudioStop = ((bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTED
-                || bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTING)
-                && (userSelectedAudioDevice != AudioDevice.NONE
-                && userSelectedAudioDevice != AudioDevice.BLUETOOTH))
+        val needBluetoothAudioStop =
+            ((bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTED
+                    || bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTING)
+                    && (userSelectedAudioDevice != AudioDevice.NONE
+                    && userSelectedAudioDevice != AudioDevice.BLUETOOTH))
         if (bluetoothManager.state == AppRTCBluetoothManager.State.HEADSET_AVAILABLE || bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTING || bluetoothManager.state == AppRTCBluetoothManager.State.SCO_CONNECTED) {
-            Timber.d("Need BT audio: start=%b, stop=%b, BT state=%s", needBluetoothAudioStart, needBluetoothAudioStop, bluetoothManager.state)
+            Timber.d(
+                "Need BT audio: start=%b, stop=%b, BT state=%s",
+                needBluetoothAudioStart,
+                needBluetoothAudioStop,
+                bluetoothManager.state
+            )
         }
 
         // Start or stop Bluetooth SCO connection given states set earlier.
@@ -461,7 +485,7 @@ class AppRTCAudioManager internal constructor(
 
             // No wired headset and no Bluetooth, hence the audio-device list can contain speaker
             // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
-            // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
+            // `defaultAudioDevice` contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
             // depending on the user's selection.
             else -> defaultAudioDevice
         }
@@ -496,7 +520,10 @@ class AppRTCAudioManager internal constructor(
         wiredHeadsetReceiver = WiredHeadsetReceiver()
         amState = AudioManagerState.UNINITIALIZED
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        useSpeakerphone = sharedPreferences.getString(context.getString(R.string.pref_speakerphone_key), context.getString(R.string.pref_speakerphone_default))
+        useSpeakerphone = sharedPreferences.getString(
+            context.getString(R.string.pref_speakerphone_key),
+            context.getString(R.string.pref_speakerphone_default)
+        )
         Timber.d("useSpeakerphone: %s", useSpeakerphone)
         defaultAudioDevice = if (useSpeakerphone == SPEAKERPHONE_FALSE) {
             AudioDevice.EARPIECE

@@ -24,7 +24,7 @@ class AsyncHttpURLConnection(
     private val url: String,
     private val message: String?,
     private val events: AsyncHttpEvents,
-    private var contentType: String = "text/plain; charset=utf-8"
+    private var contentType: String = "text/plain; charset=utf-8",
 ) {
     /**
      * Http requests callbacks.
@@ -35,7 +35,7 @@ class AsyncHttpURLConnection(
     }
 
     fun send() {
-        Thread(Runnable { sendHttpMessage() }).start()
+        Thread { sendHttpMessage() }.start()
     }
 
     private fun sendHttpMessage() {
@@ -67,13 +67,16 @@ class AsyncHttpURLConnection(
             // Get response.
             val responseCode = connection.responseCode
             if (responseCode != 200) {
-                events.onHttpError("Non-200 response to " + method + " to URL: " + url + " : " + connection.getHeaderField(null))
+                events.onHttpError(
+                    "Non-200 response to " + method + " to URL: " + url + " : " + connection.getHeaderField(
+                        null
+                    )
+                )
                 connection.disconnect()
                 return
             }
-            var response = ""
-            connection.inputStream.bufferedReader(Charsets.UTF_8).use {
-                response = drainStream(it)
+            val response = connection.inputStream.bufferedReader(Charsets.UTF_8).use {
+                drainStream(it)
             }
             connection.disconnect()
             events.onHttpComplete(response)
@@ -94,5 +97,4 @@ class AsyncHttpURLConnection(
             return if (s.hasNext()) s.next() else ""
         }
     }
-
 }

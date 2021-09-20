@@ -28,7 +28,8 @@ import kotlin.system.exitProcess
  * Thread.setDefaultUncaughtExceptionHandler() rather than
  * Thread.setUncaughtExceptionHandler(), to apply to background threads as well.
  */
-class UnhandledExceptionHandler(private val activity: AppCompatActivity) : Thread.UncaughtExceptionHandler {
+class UnhandledExceptionHandler(private val activity: AppCompatActivity) :
+    Thread.UncaughtExceptionHandler {
     override fun uncaughtException(unusedThread: Thread, e: Throwable) {
         activity.runOnUiThread {
             val title = "Fatal error: " + getTopLevelCauseMessage(e)
@@ -52,7 +53,7 @@ class UnhandledExceptionHandler(private val activity: AppCompatActivity) : Threa
     }
 
     companion object {
-        // Returns the Message attached to the original Cause of |t|.
+        // Returns the Message attached to the original Cause of `t`.
         private fun getTopLevelCauseMessage(t: Throwable): String? {
             var topLevelCause: Throwable = t
             while (true) {
@@ -62,8 +63,8 @@ class UnhandledExceptionHandler(private val activity: AppCompatActivity) : Threa
             return topLevelCause.message
         }
 
-        // Returns a human-readable String of the stacktrace in |t|, recursively
-        // through all Causes that led to |t|.
+        // Returns a human-readable String of the stacktrace in `t`, recursively
+        // through all Causes that led to `t`.
         private fun getRecursiveStackTrace(t: Throwable): String {
             val writer = StringWriter()
             t.printStackTrace(PrintWriter(writer))

@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class WebSocketChannelClient(
     private val handler: Handler,
-    private val events: WebSocketChannelEvents
+    private val events: WebSocketChannelEvents,
 ) {
     private val client = OkHttpClient()
     private var ws: WebSocket? = null
@@ -233,7 +233,12 @@ class WebSocketChannelClient(
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            Timber.d("WebSocket connection closed. Code: %d. Reason: %s. State: %s", code, reason, state)
+            Timber.d(
+                "WebSocket connection closed. Code: %d. Reason: %s. State: %s",
+                code,
+                reason,
+                state
+            )
             try {
                 closeEventLock.lock()
                 closeEvent = true
@@ -259,8 +264,7 @@ class WebSocketChannelClient(
             }
         }
 
-        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        }
+        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {}
     }
 
     companion object {

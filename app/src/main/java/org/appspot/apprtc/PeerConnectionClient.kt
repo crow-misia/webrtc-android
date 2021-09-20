@@ -34,7 +34,10 @@ import java.util.concurrent.Executors
  * Peer connection client implementation.
  *
  *
- * All public methods are routed to local looper thread.
+ * All public methods are routed to local looper thread.canIDropJetifier {
+verbose = true // Default: false, set to true to print the dependencies tree down to the old artifact
+analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins
+}
  * All PeerConnectionEvents callbacks are invoked from the same looper thread.
  * This class is a singleton.
  */
@@ -42,7 +45,7 @@ class PeerConnectionClient(
     private val appContext: Context,
     private val rootEglBase: EglBase,
     private val peerConnectionParameters: PeerConnectionParameters,
-    private val events: PeerConnectionEvents
+    private val events: PeerConnectionEvents,
 ) {
     private val pcObserver = PCObserver()
     private val sdpObserver = SDPObserver()
@@ -66,10 +69,30 @@ class PeerConnectionClient(
             // added for audio performance measurements
             if (peerConnectionParameters.noAudioProcessing) {
                 Timber.d("Disabling audio processing")
-                it.mandatory.add(MediaConstraints.KeyValuePair(AUDIO_ECHO_CANCELLATION_CONSTRAINT, "false"))
-                it.mandatory.add(MediaConstraints.KeyValuePair(AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT, "false"))
-                it.mandatory.add(MediaConstraints.KeyValuePair(AUDIO_HIGH_PASS_FILTER_CONSTRAINT, "false"))
-                it.mandatory.add(MediaConstraints.KeyValuePair(AUDIO_NOISE_SUPPRESSION_CONSTRAINT, "false"))
+                it.mandatory.add(
+                    MediaConstraints.KeyValuePair(
+                        AUDIO_ECHO_CANCELLATION_CONSTRAINT,
+                        "false"
+                    )
+                )
+                it.mandatory.add(
+                    MediaConstraints.KeyValuePair(
+                        AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT,
+                        "false"
+                    )
+                )
+                it.mandatory.add(
+                    MediaConstraints.KeyValuePair(
+                        AUDIO_HIGH_PASS_FILTER_CONSTRAINT,
+                        "false"
+                    )
+                )
+                it.mandatory.add(
+                    MediaConstraints.KeyValuePair(
+                        AUDIO_NOISE_SUPPRESSION_CONSTRAINT,
+                        "false"
+                    )
+                )
             }
         }
     }
@@ -77,7 +100,12 @@ class PeerConnectionClient(
         // Create SDP constraints.
         MediaConstraints().also {
             it.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-            it.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", isVideoCallEnabled.toString()))
+            it.mandatory.add(
+                MediaConstraints.KeyValuePair(
+                    "OfferToReceiveVideo",
+                    isVideoCallEnabled.toString()
+                )
+            )
         }
     }
 
@@ -86,6 +114,7 @@ class PeerConnectionClient(
     // remote peer after both local and remote description are set.
     private var queuedRemoteCandidates: MutableList<IceCandidate>? = null
     private var isInitiator = false
+
     // either offer or answer description
     private var localDescription: SessionDescription? = null
     private var videoCapturer: VideoCapturer? = null
@@ -113,8 +142,12 @@ class PeerConnectionClient(
      * Peer connection parameters.
      */
     class DataChannelParameters(
-        val ordered: Boolean, val maxRetransmitTimeMs: Int, val maxRetransmits: Int,
-        val protocol: String, val negotiated: Boolean, val id: Int
+        val ordered: Boolean,
+        val maxRetransmitTimeMs: Int,
+        val maxRetransmits: Int,
+        val protocol: String,
+        val negotiated: Boolean,
+        val id: Int,
     )
 
     /**
@@ -142,7 +175,7 @@ class PeerConnectionClient(
         val disableBuiltInNS: Boolean,
         val disableWebRtcAGCAndHPF: Boolean,
         val enableRtcEventLog: Boolean,
-        val dataChannelParameters: DataChannelParameters?
+        val dataChannelParameters: DataChannelParameters?,
     )
 
     /**
@@ -196,7 +229,7 @@ class PeerConnectionClient(
         /**
          * Callback fired once peer connection statistics is ready.
          */
-        fun onPeerConnectionStatsReady(reports: List<StatsReport>)
+        fun onPeerConnectionStatsReady(report: RTCStatsReport)
 
         /**
          * Callback fired once peer connection error happened.
@@ -214,20 +247,24 @@ class PeerConnectionClient(
         }
     }
 
-    fun createPeerConnection(localRender: VideoSink,
-                             remoteSink: VideoSink,
-                             videoCapturer: VideoCapturer?,
-                             signalingParameters: SignalingParameters) {
+    fun createPeerConnection(
+        localRender: VideoSink,
+        remoteSink: VideoSink,
+        videoCapturer: VideoCapturer?,
+        signalingParameters: SignalingParameters
+    ) {
         if (peerConnectionParameters.videoCallEnabled && videoCapturer == null) {
             Timber.w("Video call enabled but no video capturer provided.")
         }
         createPeerConnection(localRender, listOf(remoteSink), videoCapturer, signalingParameters)
     }
 
-    fun createPeerConnection(localRender: VideoSink,
-                             remoteSinks: List<VideoSink>,
-                             videoCapturer: VideoCapturer?,
-                             signalingParameters: SignalingParameters) {
+    fun createPeerConnection(
+        localRender: VideoSink,
+        remoteSinks: List<VideoSink>,
+        videoCapturer: VideoCapturer?,
+        signalingParameters: SignalingParameters
+    ) {
         this.localRender = localRender
         this.remoteSinks = remoteSinks
         this.videoCapturer = videoCapturer
@@ -254,7 +291,12 @@ class PeerConnectionClient(
         isError = false
         if (peerConnectionParameters.tracing) {
             appContext.getExternalFilesDir(null)?.also {
-                PeerConnectionFactory.startInternalTracingCapture(File(it, "webrtc-trace.txt").absolutePath)
+                PeerConnectionFactory.startInternalTracingCapture(
+                    File(
+                        it,
+                        "webrtc-trace.txt"
+                    ).absolutePath
+                )
             }
         }
 
@@ -285,7 +327,8 @@ class PeerConnectionClient(
         val encoderFactory: VideoEncoderFactory
         val decoderFactory: VideoDecoderFactory
         if (peerConnectionParameters.videoCodecHwAcceleration) {
-            encoderFactory = DefaultVideoEncoderFactory(rootEglBase.eglBaseContext, true, enableH264HighProfile)
+            encoderFactory =
+                DefaultVideoEncoderFactory(rootEglBase.eglBaseContext, true, enableH264HighProfile)
             decoderFactory = DefaultVideoDecoderFactory(rootEglBase.eglBaseContext)
         } else {
             encoderFactory = SoftwareVideoEncoderFactory()
@@ -315,7 +358,10 @@ class PeerConnectionClient(
                 reportError(errorMessage)
             }
 
-            override fun onWebRtcAudioRecordStartError(errorCode: JavaAudioDeviceModule.AudioRecordStartErrorCode, errorMessage: String) {
+            override fun onWebRtcAudioRecordStartError(
+                errorCode: JavaAudioDeviceModule.AudioRecordStartErrorCode,
+                errorMessage: String
+            ) {
                 Timber.e("onWebRtcAudioRecordStartError: %s. %s", errorCode, errorMessage)
                 reportError(errorMessage)
             }
@@ -331,7 +377,10 @@ class PeerConnectionClient(
                 reportError(errorMessage)
             }
 
-            override fun onWebRtcAudioTrackStartError(errorCode: JavaAudioDeviceModule.AudioTrackStartErrorCode, errorMessage: String) {
+            override fun onWebRtcAudioTrackStartError(
+                errorCode: JavaAudioDeviceModule.AudioTrackStartErrorCode,
+                errorMessage: String
+            ) {
                 Timber.e("onWebRtcAudioTrackStartError: %s. %s", errorCode, errorMessage)
                 reportError(errorMessage)
             }
@@ -438,7 +487,7 @@ class PeerConnectionClient(
         isInitiator = false
 
         // Set INFO libjingle logging.
-        // NOTE: this _must_ happen while |factory| is alive!
+        // NOTE: this _must_ happen while `factory` is alive!
         Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO)
         val mediaStreamLabels = listOf("ARDAMS")
         if (isVideoCallEnabled) {
@@ -478,7 +527,10 @@ class PeerConnectionClient(
         val dateFormat: DateFormat = SimpleDateFormat("yyyyMMdd_hhmm_ss", Locale.getDefault())
         val date = Date()
         val outputFileName = "event_log_" + dateFormat.format(date) + ".log"
-        return File(appContext.getDir(RTCEVENTLOG_OUTPUT_DIR_NAME, Context.MODE_PRIVATE), outputFileName)
+        return File(
+            appContext.getDir(RTCEVENTLOG_OUTPUT_DIR_NAME, Context.MODE_PRIVATE),
+            outputFileName
+        )
     }
 
     private fun maybeCreateAndStartRtcEventLog() {
@@ -548,7 +600,9 @@ class PeerConnectionClient(
         if (isError) {
             return
         }
-        peerConnection.getStats({ reports -> events.onPeerConnectionStatsReady(reports.asList()) }, null)
+        peerConnection.getStats {
+            events.onPeerConnectionStatsReady(it)
+        }
     }
 
     fun enableStatsEvents(enable: Boolean, periodMs: Int) {
@@ -650,7 +704,12 @@ class PeerConnectionClient(
                 preferCodec(sdp, getSdpVideoCodecName(peerConnectionParameters), false)
             }
             if (peerConnectionParameters.audioStartBitrate > 0) {
-                setStartBitrate(sdp, AUDIO_CODEC_OPUS, false, peerConnectionParameters.audioStartBitrate)
+                setStartBitrate(
+                    sdp,
+                    AUDIO_CODEC_OPUS,
+                    false,
+                    peerConnectionParameters.audioStartBitrate
+                )
             }
             Timber.d("Set remote SDP.")
             val sdpRemote = SessionDescription(desc.type, sdp.toString())
@@ -698,7 +757,8 @@ class PeerConnectionClient(
             }
             for (encoding in parameters.encodings) {
                 // Null value means no limit.
-                encoding.maxBitrateBps = if (maxBitrateKbps == null) null else maxBitrateKbps * BPS_IN_KBPS
+                encoding.maxBitrateBps =
+                    if (maxBitrateKbps == null) null else maxBitrateKbps * BPS_IN_KBPS
             }
             if (!localVideoSender.setParameters(parameters)) {
                 Timber.e("RtpSender.setParameters failed.")
@@ -730,7 +790,8 @@ class PeerConnectionClient(
         capturer ?: return null
 
         val factory = requireNotNull(factory)
-        surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", rootEglBase.eglBaseContext)
+        surfaceTextureHelper =
+            SurfaceTextureHelper.create("CaptureThread", rootEglBase.eglBaseContext)
         videoSource = factory.createVideoSource(capturer.isScreencast).also {
             capturer.initialize(surfaceTextureHelper, appContext, it.capturerObserver)
             capturer.startCapture(videoWidth, videoHeight, videoFps)
@@ -784,7 +845,11 @@ class PeerConnectionClient(
     private fun switchCameraInternal() {
         if (videoCapturer is CameraVideoCapturer) {
             if (!isVideoCallEnabled || isError) {
-                Timber.e("Failed to switch camera. Video: %b. Error : %b", isVideoCallEnabled, isError)
+                Timber.e(
+                    "Failed to switch camera. Video: %b. Error : %b",
+                    isVideoCallEnabled,
+                    isError
+                )
                 return  // No video is sent or only one camera is available or error happened.
             }
             Timber.d("Switch camera")
@@ -804,14 +869,18 @@ class PeerConnectionClient(
             changeCaptureFormatInternal(
                 width,
                 height,
-                framerate
+                framerate,
             )
         }
     }
 
     private fun changeCaptureFormatInternal(width: Int, height: Int, framerate: Int) {
         if (!isVideoCallEnabled || isError || videoCapturer == null) {
-            Timber.e("Failed to change capture format. Video: %b. Error : %b", isVideoCallEnabled, isError)
+            Timber.e(
+                "Failed to change capture format. Video: %b. Error : %b",
+                isVideoCallEnabled,
+                isError
+            )
             return
         }
         Timber.d("changeCaptureFormat: %dx%dx@%d", width, height, framerate)
@@ -906,6 +975,8 @@ class PeerConnectionClient(
         }
 
         override fun onAddTrack(receiver: RtpReceiver, mediaStreams: Array<MediaStream>) {}
+
+        override fun onRemoveTrack(receiver: RtpReceiver) {}
     }
 
     // Implementation detail: handle offer creation/signaling and answer setting,
@@ -1040,7 +1111,12 @@ class PeerConnectionClient(
             }
         }
 
-        private fun setStartBitrate(sdp: SdpSessionDescription, codec: String, isVideoCodec: Boolean, bitrateKbps: Int) {
+        private fun setStartBitrate(
+            sdp: SdpSessionDescription,
+            codec: String,
+            isVideoCodec: Boolean,
+            bitrateKbps: Int
+        ) {
             sdp.getMediaDescriptions()
                 .mapNotNull { media ->
                     // Search for codec rtpmap in format
@@ -1069,21 +1145,25 @@ class PeerConnectionClient(
                 }
         }
 
-        private fun movePayloadTypesToFront(preferredPayloadTypes: List<String>, mediaDescription: SdpMediaDescription) {
+        private fun movePayloadTypesToFront(
+            preferredPayloadTypes: List<String>,
+            mediaDescription: SdpMediaDescription
+        ) {
             // The format of the media description line should be: m=<media> <port> <proto> <fmt> ...
             val formats = mediaDescription.formats
-            // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload types.
+            // Reconstruct the line with `preferredPayloadTypes` moved to the beginning of the payload types.
             formats.removeAll(preferredPayloadTypes)
             formats.addAll(0, preferredPayloadTypes)
         }
 
         private fun preferCodec(desc: SdpSessionDescription, codec: String, isAudio: Boolean) {
             val type = if (isAudio) "audio" else "video"
-            val mediaDescription = desc.getMediaDescriptions().firstOrNull { it.type == type } ?: run {
-                Timber.w("No mediaDescription line, so can't prefer %s", codec)
-                return
-            }
-            // A list with all the payload types with name |codec|. The payload types are integers in the
+            val mediaDescription =
+                desc.getMediaDescriptions().firstOrNull { it.type == type } ?: run {
+                    Timber.w("No mediaDescription line, so can't prefer %s", codec)
+                    return
+                }
+            // A list with all the payload types with name `codec`. The payload types are integers in the
             // range 96-127, but they are stored as strings here.
             val codecPayloadTypes = mediaDescription.getAttributes<RTPMapAttribute>()
                 .filter { it.encodingName == codec }
@@ -1100,7 +1180,7 @@ class PeerConnectionClient(
 
     /**
      * Create a PeerConnectionClient with the specified parameters. PeerConnectionClient takes
-     * ownership of |eglBase|.
+     * ownership of `eglBase`.
      */
     init {
         Timber.d("Preferred video codec: %s", getSdpVideoCodecName(peerConnectionParameters))

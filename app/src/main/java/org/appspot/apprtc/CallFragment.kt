@@ -22,8 +22,7 @@ import org.webrtc.RendererCommon.ScalingType
  * Fragment for call control.
  */
 class CallFragment : Fragment() {
-    private var _binding: FragmentCallBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCallBinding
 
     private var callEvents: OnCallEvents? = null
     private var scalingType: ScalingType? = null
@@ -43,10 +42,10 @@ class CallFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         return FragmentCallBinding.inflate(inflater, container, false).also {
-            _binding = it
+            binding = it
         }.root
     }
 
@@ -80,7 +79,10 @@ class CallFragment : Fragment() {
             val contactName = it.getString(CallActivity.EXTRA_ROOMID)
             binding.contactNameCall.text = contactName
             videoCallEnabled = it.getBoolean(CallActivity.EXTRA_VIDEO_CALL, true)
-            captureSliderEnabled = videoCallEnabled && it.getBoolean(CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED, false)
+            captureSliderEnabled = videoCallEnabled && it.getBoolean(
+                CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED,
+                false
+            )
         }
         if (!videoCallEnabled) {
             binding.buttonCallSwitchCamera.visibility = View.INVISIBLE
@@ -98,10 +100,5 @@ class CallFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callEvents = requireActivity() as OnCallEvents
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 }

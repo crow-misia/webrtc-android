@@ -95,8 +95,10 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
 
         Thread.setDefaultUncaughtExceptionHandler(UnhandledExceptionHandler(this))
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
         window.decorView.systemUiVisibility = systemUiVisibility
         connected = false
 
@@ -122,8 +124,9 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
             val videoOutWidth = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, 0)
             val videoOutHeight = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT, 0)
             try {
-                videoFileRenderer = VideoFileRenderer(it, videoOutWidth, videoOutHeight, eglBase.eglBaseContext)
-                    .also { renderer -> remoteSinks.add(renderer) }
+                videoFileRenderer =
+                    VideoFileRenderer(it, videoOutWidth, videoOutHeight, eglBase.eglBaseContext)
+                        .also { renderer -> remoteSinks.add(renderer) }
             } catch (e: IOException) {
                 throw RuntimeException("Failed to open video file for output: $it", e)
             }
@@ -187,32 +190,38 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
                 maxRetransmits = intent.getIntExtra(EXTRA_MAX_RETRANSMITS, -1),
                 protocol = intent.getStringExtra(EXTRA_PROTOCOL) ?: "",
                 negotiated = intent.getBooleanExtra(EXTRA_NEGOTIATED, false),
-                id = intent.getIntExtra(EXTRA_ID, -1)
+                id = intent.getIntExtra(EXTRA_ID, -1),
             )
         }
         peerConnectionParameters = PeerConnectionParameters(
-            intent.getBooleanExtra(EXTRA_VIDEO_CALL, true),
-            loopback,
-            tracing,
-            videoWidth,
-            videoHeight,
-            intent.getIntExtra(EXTRA_VIDEO_FPS, 0),
-            intent.getIntExtra(EXTRA_VIDEO_BITRATE, 0),
-            intent.getStringExtra(EXTRA_VIDEOCODEC),
-            intent.getBooleanExtra(EXTRA_HWCODEC_ENABLED, true),
-            intent.getBooleanExtra(EXTRA_FLEXFEC_ENABLED, false),
-            intent.getIntExtra(EXTRA_AUDIO_BITRATE, 0),
-            intent.getStringExtra(EXTRA_AUDIOCODEC),
-            intent.getBooleanExtra(EXTRA_NOAUDIOPROCESSING_ENABLED, false),
-            intent.getBooleanExtra(EXTRA_AECDUMP_ENABLED, false),
-            intent.getBooleanExtra(EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED, false),
-            intent.getBooleanExtra(EXTRA_OPENSLES_ENABLED, false),
-            intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AEC, false),
-            intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AGC, false),
-            intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_NS, false),
-            intent.getBooleanExtra(EXTRA_DISABLE_WEBRTC_AGC_AND_HPF, false),
-            intent.getBooleanExtra(EXTRA_ENABLE_RTCEVENTLOG, false),
-            dataChannelParameters
+            videoCallEnabled = intent.getBooleanExtra(EXTRA_VIDEO_CALL, true),
+            loopback = loopback,
+            tracing = tracing,
+            videoWidth = videoWidth,
+            videoHeight = videoHeight,
+            videoFps = intent.getIntExtra(EXTRA_VIDEO_FPS, 0),
+            videoMaxBitrate = intent.getIntExtra(EXTRA_VIDEO_BITRATE, 0),
+            videoCodec = intent.getStringExtra(EXTRA_VIDEOCODEC),
+            videoCodecHwAcceleration = intent.getBooleanExtra(EXTRA_HWCODEC_ENABLED, true),
+            videoFlexfecEnabled = intent.getBooleanExtra(EXTRA_FLEXFEC_ENABLED, false),
+            audioStartBitrate = intent.getIntExtra(EXTRA_AUDIO_BITRATE, 0),
+            audioCodec = intent.getStringExtra(EXTRA_AUDIOCODEC),
+            noAudioProcessing = intent.getBooleanExtra(EXTRA_NOAUDIOPROCESSING_ENABLED, false),
+            aecDump = intent.getBooleanExtra(EXTRA_AECDUMP_ENABLED, false),
+            saveInputAudioToFile = intent.getBooleanExtra(
+                EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED,
+                false
+            ),
+            useOpenSLES = intent.getBooleanExtra(EXTRA_OPENSLES_ENABLED, false),
+            disableBuiltInAEC = intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AEC, false),
+            disableBuiltInAGC = intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AGC, false),
+            disableBuiltInNS = intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_NS, false),
+            disableWebRtcAGCAndHPF = intent.getBooleanExtra(
+                EXTRA_DISABLE_WEBRTC_AGC_AND_HPF,
+                false
+            ),
+            enableRtcEventLog = intent.getBooleanExtra(EXTRA_ENABLE_RTCEVENTLOG, false),
+            dataChannelParameters = dataChannelParameters,
         )
         commandLineRun = intent.getBooleanExtra(EXTRA_CMDLINE, false)
         val runTimeMs = intent.getIntExtra(EXTRA_RUNTIME, 0)
@@ -228,7 +237,8 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         }
         // Create connection parameters.
         val urlParameters = intent.getStringExtra(EXTRA_URLPARAMETERS)
-        roomConnectionParameters = RoomConnectionParameters(roomUri.toString(), roomId, loopback, urlParameters)
+        roomConnectionParameters =
+            RoomConnectionParameters(roomUri.toString(), roomId, loopback, urlParameters)
 
         // Send intent arguments to fragments.
         callFragment.arguments = intent.extras
@@ -245,7 +255,12 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         }
 
         // Create peer connection client.
-        peerConnectionClient = PeerConnectionClient(applicationContext, eglBase, peerConnectionParameters, this@CallActivity)
+        peerConnectionClient = PeerConnectionClient(
+            applicationContext,
+            eglBase,
+            peerConnectionParameters,
+            this@CallActivity
+        )
         val options = PeerConnectionFactory.Options()
         if (loopback) {
             options.networkIgnoreMask = 0
@@ -268,8 +283,12 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startScreenCapture() {
-        val mediaProjectionManager: MediaProjectionManager = application.getSystemService() ?: return
-        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), CAPTURE_PERMISSION_REQUEST_CODE)
+        val mediaProjectionManager: MediaProjectionManager =
+            application.getSystemService() ?: return
+        startActivityForResult(
+            mediaProjectionManager.createScreenCaptureIntent(),
+            CAPTURE_PERMISSION_REQUEST_CODE
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -390,8 +409,10 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
 
     // Helper functions.
     private fun toggleCallControlFragmentVisibility() {
-        val hudFragment = requireNotNull(supportFragmentManager.findFragmentById(R.id.hud_fragment_container) as HudFragment?)
-        val callFragment = requireNotNull(supportFragmentManager.findFragmentById(R.id.call_fragment_container) as CallFragment?)
+        val hudFragment =
+            requireNotNull(supportFragmentManager.findFragmentById(R.id.hud_fragment_container) as HudFragment?)
+        val callFragment =
+            requireNotNull(supportFragmentManager.findFragmentById(R.id.call_fragment_container) as CallFragment?)
 
         if (!connected || !callFragment.isAdded) {
             return
@@ -502,9 +523,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
                 .setTitle(getText(R.string.channel_error_title))
                 .setMessage(errorMessage)
                 .setCancelable(false)
-                .setNeutralButton(
-                    R.string.ok
-                ) { dialog, _ ->
+                .setNeutralButton(R.string.ok) { dialog, _ ->
                     dialog.cancel()
                     disconnect()
                 }
@@ -513,7 +532,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         }
     }
 
-    // Log |msg| and Toast about it.
+    // Log `msg` and Toast about it.
     private fun logAndToast(msg: String) {
         Timber.d(msg)
         logToast?.cancel()
@@ -588,7 +607,12 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         if (peerConnectionParameters.videoCallEnabled) {
             videoCapturer = createVideoCapturer()
         }
-        peerConnectionClient.createPeerConnection(localProxyVideoSink, remoteSinks, videoCapturer, params)
+        peerConnectionClient.createPeerConnection(
+            localProxyVideoSink,
+            remoteSinks,
+            videoCapturer,
+            params
+        )
         if (params.initiator) {
             logAndToast("Creating OFFER...")
             // Create offer. Offer SDP will be sent to answering client in
@@ -724,11 +748,11 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
 
     override fun onPeerConnectionClosed() {}
 
-    override fun onPeerConnectionStatsReady(reports: List<StatsReport>) {
+    override fun onPeerConnectionStatsReady(report: RTCStatsReport) {
         runOnUiThread {
             if (!isError && connected) {
                 (supportFragmentManager.findFragmentById(R.id.hud_fragment_container) as HudFragment?)
-                    ?.updateEncoderStatistics(reports)
+                    ?.updateEncoderStatistics(report)
             }
         }
     }
@@ -748,7 +772,8 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         const val EXTRA_VIDEO_WIDTH = "org.appspot.apprtc.VIDEO_WIDTH"
         const val EXTRA_VIDEO_HEIGHT = "org.appspot.apprtc.VIDEO_HEIGHT"
         const val EXTRA_VIDEO_FPS = "org.appspot.apprtc.VIDEO_FPS"
-        const val EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED = "org.appsopt.apprtc.VIDEO_CAPTUREQUALITYSLIDER"
+        const val EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED =
+            "org.appsopt.apprtc.VIDEO_CAPTUREQUALITYSLIDER"
         const val EXTRA_VIDEO_BITRATE = "org.appspot.apprtc.VIDEO_BITRATE"
         const val EXTRA_VIDEOCODEC = "org.appspot.apprtc.VIDEOCODEC"
         const val EXTRA_HWCODEC_ENABLED = "org.appspot.apprtc.HWCODEC"
@@ -758,20 +783,24 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         const val EXTRA_AUDIOCODEC = "org.appspot.apprtc.AUDIOCODEC"
         const val EXTRA_NOAUDIOPROCESSING_ENABLED = "org.appspot.apprtc.NOAUDIOPROCESSING"
         const val EXTRA_AECDUMP_ENABLED = "org.appspot.apprtc.AECDUMP"
-        const val EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED = "org.appspot.apprtc.SAVE_INPUT_AUDIO_TO_FILE"
+        const val EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED =
+            "org.appspot.apprtc.SAVE_INPUT_AUDIO_TO_FILE"
         const val EXTRA_OPENSLES_ENABLED = "org.appspot.apprtc.OPENSLES"
         const val EXTRA_DISABLE_BUILT_IN_AEC = "org.appspot.apprtc.DISABLE_BUILT_IN_AEC"
         const val EXTRA_DISABLE_BUILT_IN_AGC = "org.appspot.apprtc.DISABLE_BUILT_IN_AGC"
         const val EXTRA_DISABLE_BUILT_IN_NS = "org.appspot.apprtc.DISABLE_BUILT_IN_NS"
-        const val EXTRA_DISABLE_WEBRTC_AGC_AND_HPF = "org.appspot.apprtc.DISABLE_WEBRTC_GAIN_CONTROL"
+        const val EXTRA_DISABLE_WEBRTC_AGC_AND_HPF =
+            "org.appspot.apprtc.DISABLE_WEBRTC_GAIN_CONTROL"
         const val EXTRA_DISPLAY_HUD = "org.appspot.apprtc.DISPLAY_HUD"
         const val EXTRA_TRACING = "org.appspot.apprtc.TRACING"
         const val EXTRA_CMDLINE = "org.appspot.apprtc.CMDLINE"
         const val EXTRA_RUNTIME = "org.appspot.apprtc.RUNTIME"
         const val EXTRA_VIDEO_FILE_AS_CAMERA = "org.appspot.apprtc.VIDEO_FILE_AS_CAMERA"
         const val EXTRA_SAVE_REMOTE_VIDEO_TO_FILE = "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE"
-        const val EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH = "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_WIDTH"
-        const val EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT = "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT"
+        const val EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH =
+            "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_WIDTH"
+        const val EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT =
+            "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT"
         const val EXTRA_USE_VALUES_FROM_INTENT = "org.appspot.apprtc.USE_VALUES_FROM_INTENT"
         const val EXTRA_DATA_CHANNEL_ENABLED = "org.appspot.apprtc.DATA_CHANNEL_ENABLED"
         const val EXTRA_ORDERED = "org.appspot.apprtc.ORDERED"
@@ -786,7 +815,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         // List of mandatory application permissions.
         private val MANDATORY_PERMISSIONS = arrayOf(
             "android.permission.MODIFY_AUDIO_SETTINGS",
-            "android.permission.RECORD_AUDIO", "android.permission.INTERNET"
+            "android.permission.RECORD_AUDIO", "android.permission.INTERNET",
         )
 
         // Peer connection statistics callback period in ms.

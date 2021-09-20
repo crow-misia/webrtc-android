@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class RecordedAudioToFileController(
     appContext: Context,
-    private val executor: ExecutorService
+    private val executor: ExecutorService,
 ) : SamplesReadyCallback {
     private val lock = ReentrantLock()
     private var rawAudioFileOutputStream: OutputStream? = null
@@ -84,8 +84,10 @@ class RecordedAudioToFileController(
     // information so that the file can be played using an external file player.
     // Example: /sdcard/recorded_audio_16bits_48000Hz_mono.pcm.
     private fun openRawAudioOutputFile(sampleRate: Int, channelCount: Int) {
-        val outputFile = File(externalStorageDirectory,
-            "recorded_audio_16bits_" + sampleRate.toString() + "Hz" + (if (channelCount == 1) "_mono" else "_stereo") + ".pcm")
+        val outputFile = File(
+            externalStorageDirectory,
+            "recorded_audio_16bits_" + sampleRate.toString() + "Hz" + (if (channelCount == 1) "_mono" else "_stereo") + ".pcm"
+        )
         try {
             rawAudioFileOutputStream = FileOutputStream(outputFile)
         } catch (e: FileNotFoundException) {

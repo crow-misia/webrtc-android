@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
  */
 class CaptureQualityController(
     private val captureFormatText: TextView,
-    private val callEvents: OnCallEvents?
+    private val callEvents: OnCallEvents?,
 ) : OnSeekBarChangeListener {
     private val formats = listOf(
         CaptureFormat(1280, 720, 0, 30000), CaptureFormat(960, 540, 0, 30000),
@@ -58,8 +58,10 @@ class CaptureQualityController(
         // Extract max bandwidth (in millipixels / second).
         var maxCaptureBandwidth = Long.MIN_VALUE
         for (format in formats) {
-            maxCaptureBandwidth = maxCaptureBandwidth.coerceAtLeast(format.width.toLong()
-                    * format.height * format.framerate.max)
+            maxCaptureBandwidth = maxCaptureBandwidth.coerceAtLeast(
+                format.width.toLong()
+                        * format.height * format.framerate.max
+            )
         }
 
         // Fraction between 0 and 1.
@@ -74,7 +76,12 @@ class CaptureQualityController(
         width = bestFormat.width
         height = bestFormat.height
         framerate = calculateFramerate(targetBandwidth, bestFormat)
-        captureFormatText.text = String.format(captureFormatText.context.getString(R.string.format_description), width, height, framerate)
+        captureFormatText.text = String.format(
+            captureFormatText.context.getString(R.string.format_description),
+            width,
+            height,
+            framerate
+        )
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {}

@@ -24,7 +24,7 @@ interface AppRTCClient {
         val roomUrl: String,
         val roomId: String,
         val loopback: Boolean,
-        val urlParameters: String? = null
+        val urlParameters: String? = null,
     )
 
     /**
@@ -69,14 +69,14 @@ interface AppRTCClient {
         val wssUrl: String,
         val wssPostUrl: String,
         val offerSdp: SessionDescription?,
-        val iceCandidates: List<IceCandidate>
+        val iceCandidates: List<IceCandidate>,
     )
 
     /**
      * Callback interface for messages delivered on signaling channel.
      *
      *
-     * Methods are guaranteed to be invoked on the UI thread of |activity|.
+     * Methods are guaranteed to be invoked on the UI thread of `activity`.
      */
     interface SignalingEvents {
         /**

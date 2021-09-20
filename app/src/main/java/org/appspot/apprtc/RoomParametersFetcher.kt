@@ -33,7 +33,7 @@ import java.util.*
 class RoomParametersFetcher(
     private val roomUrl: String,
     private val roomMessage: String,
-    private val events: RoomParametersFetcherEvents
+    private val events: RoomParametersFetcherEvents,
 ) {
 
     /**
@@ -54,16 +54,17 @@ class RoomParametersFetcher(
 
     fun makeRequest() {
         Timber.d("Connecting to room: %s", roomUrl)
-        val httpConnection = AsyncHttpURLConnection("POST", roomUrl, roomMessage, object : AsyncHttpEvents {
-            override fun onHttpError(errorMessage: String) {
-                Timber.e("Room connection error: %s", errorMessage)
-                events.onSignalingParametersError(errorMessage)
-            }
+        val httpConnection =
+            AsyncHttpURLConnection("POST", roomUrl, roomMessage, object : AsyncHttpEvents {
+                override fun onHttpError(errorMessage: String) {
+                    Timber.e("Room connection error: %s", errorMessage)
+                    events.onSignalingParametersError(errorMessage)
+                }
 
-            override fun onHttpComplete(response: String) {
-                roomHttpResponseParse(response)
-            }
-        })
+                override fun onHttpComplete(response: String) {
+                    roomHttpResponseParse(response)
+                }
+            })
         httpConnection.send()
     }
 
@@ -136,7 +137,15 @@ class RoomParametersFetcher(
                     iceServers.add(turnServer)
                 }
             }
-            val params = SignalingParameters(iceServers, initiator, clientId, wssUrl, wssPostUrl, offerSdp, iceCandidates)
+            val params = SignalingParameters(
+                iceServers,
+                initiator,
+                clientId,
+                wssUrl,
+                wssPostUrl,
+                offerSdp,
+                iceCandidates
+            )
             events.onSignalingParametersReady(params)
         } catch (e: JSONException) {
             events.onSignalingParametersError("Room JSON parsing error: $e")

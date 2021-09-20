@@ -20,7 +20,8 @@ import org.webrtc.audio.JavaAudioDeviceModule
 /**
  * Settings fragment for AppRTC.
  */
-class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(),
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private val keyprefVideoCall by lazy { getString(R.string.pref_videocall_key) }
     private val keyprefScreencapture by lazy { getString(R.string.pref_screencapture_key) }
     private val keyprefCamera2 by lazy { getString(R.string.pref_camera2_key) }
@@ -140,7 +141,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(
         sharedPreferences: SharedPreferences,
-        key: String
+        key: String,
     ) {
         // clang-format off
         if (key == keyprefResolution || key == keyprefFps || key == keyprefMaxVideoBitrateType || key == keyPrefVideoCodec || key == keyprefStartAudioBitrateType || key == keyPrefAudioCodec || key == keyPrefRoomServerUrl || key == keyprefMaxRetransmitTimeMs || key == keyprefMaxRetransmits || key == keyprefDataProtocol || key == keyprefDataId) {
@@ -190,14 +191,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun setVideoBitrateEnable(sharedPreferences: SharedPreferences) {
         val bitratePreferenceValue = findPreference<Preference>(keyprefMaxVideoBitrateValue)
         val bitrateTypeDefault = getString(R.string.pref_maxvideobitrate_default)
-        val bitrateType = sharedPreferences.getString(keyprefMaxVideoBitrateType, bitrateTypeDefault)
+        val bitrateType =
+            sharedPreferences.getString(keyprefMaxVideoBitrateType, bitrateTypeDefault)
         bitratePreferenceValue?.isEnabled = bitrateType != bitrateTypeDefault
     }
 
     private fun setAudioBitrateEnable(sharedPreferences: SharedPreferences) {
         val bitratePreferenceValue = findPreference<Preference>(keyprefStartAudioBitrateValue)
         val bitrateTypeDefault = getString(R.string.pref_startaudiobitrate_default)
-        val bitrateType = sharedPreferences.getString(keyprefStartAudioBitrateType, bitrateTypeDefault)
+        val bitrateType =
+            sharedPreferences.getString(keyprefStartAudioBitrateType, bitrateTypeDefault)
         bitratePreferenceValue?.isEnabled = bitrateType != bitrateTypeDefault
     }
 

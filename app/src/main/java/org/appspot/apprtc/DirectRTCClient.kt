@@ -160,7 +160,7 @@ class DirectRTCClient(private val events: SignalingEvents) : AppRTCClient, TCPCh
                 initiator = server,  // Server side acts as the initiator on direct connections.
                 clientId = null,  // clientId
                 wssUrl = "",  // wssUrl
-                wssPostUrl =  "",  // wssPostUrl
+                wssPostUrl = "",  // wssPostUrl
                 offerSdp = null,  // offerSdp
                 iceCandidates = emptyList() // iceCandidates
             )
@@ -178,11 +178,17 @@ class DirectRTCClient(private val events: SignalingEvents) : AppRTCClient, TCPCh
                     events.onRemoteIceCandidatesRemoved(candidateArray.toList { toJavaCandidate(it) })
                 }
                 "answer" -> {
-                    val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
+                    val sdp = SessionDescription(
+                        SessionDescription.Type.fromCanonicalForm(type),
+                        json.getString("sdp")
+                    )
                     events.onRemoteDescription(sdp)
                 }
                 "offer" -> {
-                    val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
+                    val sdp = SessionDescription(
+                        SessionDescription.Type.fromCanonicalForm(type),
+                        json.getString("sdp")
+                    )
                     // Ice servers are not needed for direct connections.
                     val parameters = SignalingParameters(
                         iceServers = arrayListOf(),
@@ -244,7 +250,7 @@ class DirectRTCClient(private val events: SignalingEvents) : AppRTCClient, TCPCh
                     + "(:(\\d+))?"
         )
 
-        // Put a |key|->|value| mapping in |json|.
+        // Put a `key`->`value` mapping in `json`.
         private fun jsonPut(json: JSONObject, key: String, value: Any) {
             try {
                 json.put(key, value)

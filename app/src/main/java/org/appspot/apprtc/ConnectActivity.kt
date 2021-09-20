@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.appspot.apprtc.databinding.ActivityConnectBinding
 import org.json.JSONArray
@@ -45,7 +46,11 @@ import java.util.*
 class ConnectActivity : AppCompatActivity() {
     private lateinit var binding: ActivityConnectBinding
 
-    private val sharedPref: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    private val sharedPref: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(
+            this
+        )
+    }
     private val keyprefResolution: String by lazy { getString(R.string.pref_resolution_key) }
     private val keyprefFps: String by lazy { getString(R.string.pref_fps_key) }
     private val keyprefVideoBitrateType: String by lazy { getString(R.string.pref_maxvideobitrate_key) }
@@ -56,7 +61,13 @@ class ConnectActivity : AppCompatActivity() {
     private val keyprefRoom: String by lazy { getString(R.string.pref_room_key) }
     private val keyprefRoomList: String by lazy { getString(R.string.pref_room_list_key) }
     private val roomList = arrayListOf<String>()
-    private val adapter by lazy { ArrayAdapter(this, android.R.layout.simple_list_item_1, roomList) }
+    private val adapter by lazy {
+        ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            roomList
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,20 +127,23 @@ class ConnectActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items.
-        return if (item.itemId == R.id.action_settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-            true
-        } else if (item.itemId == R.id.action_loopback) {
-            connectToRoom(null,
-                commandLineRun = false,
-                loopback = true,
-                useValuesFromIntent = false,
-                runTimeMs = 0
-            )
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_loopback -> {
+                connectToRoom(
+                    null,
+                    commandLineRun = false,
+                    loopback = true,
+                    useValuesFromIntent = false,
+                    runTimeMs = 0,
+                )
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -137,10 +151,10 @@ class ConnectActivity : AppCompatActivity() {
         super.onPause()
         val room = binding.roomEdittext.text.toString()
         val roomListJson = JSONArray(roomList).toString()
-        val editor = sharedPref.edit()
-        editor.putString(keyprefRoom, room)
-        editor.putString(keyprefRoomList, roomListJson)
-        editor.apply()
+        sharedPref.edit {
+            putString(keyprefRoom, room)
+            putString(keyprefRoomList, roomListJson)
+        }
     }
 
     public override fun onResume() {
@@ -178,7 +192,11 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_REQUEST) {
             val missingPermissions = getMissingPermissions()
             if (missingPermissions.isNotEmpty()) {
@@ -212,7 +230,8 @@ class ConnectActivity : AppCompatActivity() {
         if ("android.intent.action.VIEW" == intent.action && !commandLineRun) {
             val loopback = intent.getBooleanExtra(CallActivity.EXTRA_LOOPBACK, false)
             val runTimeMs = intent.getIntExtra(CallActivity.EXTRA_RUNTIME, 0)
-            val useValuesFromIntent = intent.getBooleanExtra(CallActivity.EXTRA_USE_VALUES_FROM_INTENT, false)
+            val useValuesFromIntent =
+                intent.getBooleanExtra(CallActivity.EXTRA_USE_VALUES_FROM_INTENT, false)
             val roomId = sharedPref.getString(keyprefRoom, null) ?: ""
             connectToRoom(roomId, true, loopback, useValuesFromIntent, runTimeMs)
         }
@@ -262,7 +281,12 @@ class ConnectActivity : AppCompatActivity() {
      * Get a value from the shared preference or from the intent, if it does not
      * exist the default is used.
      */
-    private fun sharedPrefGetString(attributeId: Int, intentName: String, defaultId: Int, useFromIntent: Boolean): String {
+    private fun sharedPrefGetString(
+        attributeId: Int,
+        intentName: String,
+        defaultId: Int,
+        useFromIntent: Boolean
+    ): String {
         val defaultValue = getString(defaultId)
         return if (useFromIntent) {
             val value = intent.getStringExtra(intentName)
@@ -277,7 +301,12 @@ class ConnectActivity : AppCompatActivity() {
      * Get a value from the shared preference or from the intent, if it does not
      * exist the default is used.
      */
-    private fun sharedPrefGetBoolean(attributeId: Int, intentName: String, defaultId: Int, useFromIntent: Boolean): Boolean {
+    private fun sharedPrefGetBoolean(
+        attributeId: Int,
+        intentName: String,
+        defaultId: Int,
+        useFromIntent: Boolean
+    ): Boolean {
         val defaultValue = java.lang.Boolean.parseBoolean(getString(defaultId))
         return if (useFromIntent) {
             intent.getBooleanExtra(intentName, defaultValue)
@@ -291,7 +320,12 @@ class ConnectActivity : AppCompatActivity() {
      * Get a value from the shared preference or from the intent, if it does not
      * exist the default is used.
      */
-    private fun sharedPrefGetInteger(attributeId: Int, intentName: String, defaultId: Int, useFromIntent: Boolean): Int {
+    private fun sharedPrefGetInteger(
+        attributeId: Int,
+        intentName: String,
+        defaultId: Int,
+        useFromIntent: Boolean
+    ): Int {
         val defaultString = getString(defaultId)
         val defaultValue = defaultString.toInt()
         return if (useFromIntent) {
@@ -306,8 +340,10 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
-    private fun connectToRoom(roomId: String?, commandLineRun: Boolean, loopback: Boolean,
-                              useValuesFromIntent: Boolean, runTimeMs: Int) {
+    private fun connectToRoom(
+        roomId: String?, commandLineRun: Boolean, loopback: Boolean,
+        useValuesFromIntent: Boolean, runTimeMs: Int
+    ) {
         Companion.commandLineRun = commandLineRun
 
         var newRoomId = roomId
@@ -315,7 +351,10 @@ class ConnectActivity : AppCompatActivity() {
         if (loopback) {
             newRoomId = Random().nextInt(100000000).toString()
         }
-        val roomUrl = sharedPref.getString(keyprefRoomServerUrl, getString(R.string.pref_room_server_url_default))
+        val roomUrl = sharedPref.getString(
+            keyprefRoomServerUrl,
+            getString(R.string.pref_room_server_url_default)
+        )
 
         // Video call enabled flag.
         val videoCallEnabled = sharedPrefGetBoolean(
@@ -425,7 +464,8 @@ class ConnectActivity : AppCompatActivity() {
             videoHeight = intent.getIntExtra(CallActivity.EXTRA_VIDEO_HEIGHT, 0)
         }
         if (videoWidth == 0 && videoHeight == 0) {
-            val resolution = sharedPref.getString(keyprefResolution, getString(R.string.pref_resolution_default))
+            val resolution =
+                sharedPref.getString(keyprefResolution, getString(R.string.pref_resolution_default))
             val dimensions = resolution?.split("[ x]+")?.toTypedArray() ?: emptyArray()
             if (dimensions.size == 2) {
                 try {
@@ -473,7 +513,10 @@ class ConnectActivity : AppCompatActivity() {
             val bitrateTypeDefault = getString(R.string.pref_maxvideobitrate_default)
             val bitrateType = sharedPref.getString(keyprefVideoBitrateType, bitrateTypeDefault)
             if (bitrateType != bitrateTypeDefault) {
-                sharedPref.getString(keyprefVideoBitrateValue, getString(R.string.pref_maxvideobitratevalue_default))?.also {
+                sharedPref.getString(
+                    keyprefVideoBitrateValue,
+                    getString(R.string.pref_maxvideobitratevalue_default)
+                )?.also {
                     videoStartBitrate = it.toInt()
                 }
             }
@@ -486,7 +529,10 @@ class ConnectActivity : AppCompatActivity() {
             val bitrateTypeDefault = getString(R.string.pref_startaudiobitrate_default)
             val bitrateType = sharedPref.getString(keyprefAudioBitrateType, bitrateTypeDefault)
             if (bitrateType != bitrateTypeDefault) {
-                sharedPref.getString(keyprefAudioBitrateValue, getString(R.string.pref_startaudiobitratevalue_default))?.also {
+                sharedPref.getString(
+                    keyprefAudioBitrateValue,
+                    getString(R.string.pref_startaudiobitratevalue_default)
+                )?.also {
                     audioStartBitrate = it.toInt()
                 }
             }
@@ -555,7 +601,10 @@ class ConnectActivity : AppCompatActivity() {
             intent.putExtra(CallActivity.EXTRA_VIDEO_WIDTH, videoWidth)
             intent.putExtra(CallActivity.EXTRA_VIDEO_HEIGHT, videoHeight)
             intent.putExtra(CallActivity.EXTRA_VIDEO_FPS, cameraFps)
-            intent.putExtra(CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED, captureQualitySlider)
+            intent.putExtra(
+                CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED,
+                captureQualitySlider
+            )
             intent.putExtra(CallActivity.EXTRA_VIDEO_BITRATE, videoStartBitrate)
             intent.putExtra(CallActivity.EXTRA_VIDEOCODEC, videoCodec)
             intent.putExtra(CallActivity.EXTRA_HWCODEC_ENABLED, hwCodec)
@@ -563,7 +612,10 @@ class ConnectActivity : AppCompatActivity() {
             intent.putExtra(CallActivity.EXTRA_FLEXFEC_ENABLED, flexfecEnabled)
             intent.putExtra(CallActivity.EXTRA_NOAUDIOPROCESSING_ENABLED, noAudioProcessing)
             intent.putExtra(CallActivity.EXTRA_AECDUMP_ENABLED, aecDump)
-            intent.putExtra(CallActivity.EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED, saveInputAudioToFile)
+            intent.putExtra(
+                CallActivity.EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED,
+                saveInputAudioToFile
+            )
             intent.putExtra(CallActivity.EXTRA_OPENSLES_ENABLED, useOpenSLES)
             intent.putExtra(CallActivity.EXTRA_DISABLE_BUILT_IN_AEC, disableBuiltInAEC)
             intent.putExtra(CallActivity.EXTRA_DISABLE_BUILT_IN_AGC, disableBuiltInAGC)
@@ -587,11 +639,13 @@ class ConnectActivity : AppCompatActivity() {
             }
             if (useValuesFromIntent) {
                 if (getIntent().hasExtra(CallActivity.EXTRA_VIDEO_FILE_AS_CAMERA)) {
-                    val videoFileAsCamera = getIntent().getStringExtra(CallActivity.EXTRA_VIDEO_FILE_AS_CAMERA)
+                    val videoFileAsCamera =
+                        getIntent().getStringExtra(CallActivity.EXTRA_VIDEO_FILE_AS_CAMERA)
                     intent.putExtra(CallActivity.EXTRA_VIDEO_FILE_AS_CAMERA, videoFileAsCamera)
                 }
                 if (getIntent().hasExtra(CallActivity.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE)) {
-                    val saveRemoteVideoToFile = getIntent().getStringExtra(CallActivity.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE)
+                    val saveRemoteVideoToFile =
+                        getIntent().getStringExtra(CallActivity.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE)
                     intent.putExtra(
                         CallActivity.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE,
                         saveRemoteVideoToFile
@@ -643,7 +697,8 @@ class ConnectActivity : AppCompatActivity() {
             commandLineRun = false,
             loopback = false,
             useValuesFromIntent = false,
-            runTimeMs = 0)
+            runTimeMs = 0
+        )
     }
     private val addFavoriteListener =
         View.OnClickListener {
@@ -660,7 +715,8 @@ class ConnectActivity : AppCompatActivity() {
                 commandLineRun = false,
                 loopback = false,
                 useValuesFromIntent = false,
-                runTimeMs = 0)
+                runTimeMs = 0
+            )
         }
 
     companion object {

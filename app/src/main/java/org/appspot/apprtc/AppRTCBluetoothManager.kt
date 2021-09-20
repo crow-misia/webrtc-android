@@ -34,7 +34,7 @@ import timber.log.Timber
  */
 class AppRTCBluetoothManager private constructor(
     private val context: Context,
-    private val apprtcAudioManager: AppRTCAudioManager
+    private val apprtcAudioManager: AppRTCAudioManager,
 ) {
     // Bluetooth connection state.
     enum class State {
@@ -49,7 +49,7 @@ class AppRTCBluetoothManager private constructor(
         HEADSET_AVAILABLE,  // Bluetooth audio SCO connection with remote device is closing.
         SCO_DISCONNECTING,  // Bluetooth audio SCO connection with remote device is initiated.
         SCO_CONNECTING,  // Bluetooth audio SCO connection with remote device is established.
-        SCO_CONNECTED
+        SCO_CONNECTED,
     }
 
     private val audioManager by lazy { getAudioManager(context) }
@@ -106,7 +106,7 @@ class AppRTCBluetoothManager private constructor(
     private inner class BluetoothHeadsetBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(
             context: Context,
-            intent: Intent
+            intent: Intent,
         ) {
             if (bluetoothState == State.UNINITIALIZED) {
                 return
@@ -117,9 +117,14 @@ class AppRTCBluetoothManager private constructor(
             // audio to BT over SCO. Typically received when user turns on a BT
             // headset while audio is active using another audio device.
             if (action == BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED) {
-                val state = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_DISCONNECTED)
-                Timber.d("BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_CONNECTION_STATE_CHANGED, s=%s, sb=%b, BT state: %s",
-                    stateToString(state), isInitialStickyBroadcast, bluetoothState)
+                val state = intent.getIntExtra(
+                    BluetoothHeadset.EXTRA_STATE,
+                    BluetoothHeadset.STATE_DISCONNECTED
+                )
+                Timber.d(
+                    "BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_CONNECTION_STATE_CHANGED, s=%s, sb=%b, BT state: %s",
+                    stateToString(state), isInitialStickyBroadcast, bluetoothState
+                )
                 when (state) {
                     BluetoothHeadset.STATE_CONNECTED -> {
                         scoConnectionAttempts = 0
@@ -142,9 +147,14 @@ class AppRTCBluetoothManager private constructor(
                 // Change in the audio (SCO) connection state of the Headset profile.
                 // Typically received after call to startScoAudio() has finalized.
             } else if (action == BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED) {
-                val state = intent.getIntExtra(BluetoothHeadset.EXTRA_STATE, BluetoothHeadset.STATE_AUDIO_DISCONNECTED)
-                Timber.d("BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_AUDIO_STATE_CHANGED, s=%s, sb=%b, BT state: %s",
-                    stateToString(state), isInitialStickyBroadcast, bluetoothState)
+                val state = intent.getIntExtra(
+                    BluetoothHeadset.EXTRA_STATE,
+                    BluetoothHeadset.STATE_AUDIO_DISCONNECTED
+                )
+                Timber.d(
+                    "BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_AUDIO_STATE_CHANGED, s=%s, sb=%b, BT state: %s",
+                    stateToString(state), isInitialStickyBroadcast, bluetoothState
+                )
                 if (state == BluetoothHeadset.STATE_AUDIO_CONNECTED) {
                     cancelTimer()
                     if (bluetoothState == State.SCO_CONNECTING) {
@@ -218,7 +228,12 @@ class AppRTCBluetoothManager private constructor(
         logBluetoothAdapterInfo(adapter)
         // Establish a connection to the HEADSET profile (includes both Bluetooth Headset and
         // Hands-Free) proxy object and install a listener.
-        if (!getBluetoothProfileProxy(context, bluetoothServiceListener, BluetoothProfile.HEADSET)) {
+        if (!getBluetoothProfileProxy(
+                context,
+                bluetoothServiceListener,
+                BluetoothProfile.HEADSET
+            )
+        ) {
             Timber.e("BluetoothAdapter.getProfileProxy(HEADSET) failed")
             return
         }
@@ -229,8 +244,10 @@ class AppRTCBluetoothManager private constructor(
         // Register receiver for change in audio connection state of the Headset profile.
         bluetoothHeadsetFilter.addAction(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED)
         registerReceiver(bluetoothHeadsetReceiver, bluetoothHeadsetFilter)
-        Timber.d("HEADSET profile state: %s",
-            stateToString(adapter.getProfileConnectionState(BluetoothProfile.HEADSET)))
+        Timber.d(
+            "HEADSET profile state: %s",
+            stateToString(adapter.getProfileConnectionState(BluetoothProfile.HEADSET))
+        )
         Timber.d("Bluetooth proxy for headset profile has started")
         bluetoothState = State.HEADSET_UNAVAILABLE
         Timber.d("start done: BT state=%s", bluetoothState)
@@ -274,7 +291,12 @@ class AppRTCBluetoothManager private constructor(
      */
     fun startScoAudio(): Boolean {
         ThreadUtils.checkIsOnMainThread()
-        Timber.d("startSco: BT state=%s, attempts: %d, SCO is on: %b", bluetoothState, scoConnectionAttempts, isScoOn)
+        Timber.d(
+            "startSco: BT state=%s, attempts: %d, SCO is on: %b",
+            bluetoothState,
+            scoConnectionAttempts,
+            isScoOn
+        )
         if (scoConnectionAttempts >= MAX_SCO_CONNECTION_ATTEMPTS) {
             Timber.e("BT SCO connection fails - no more attempts")
             return false
@@ -315,7 +337,7 @@ class AppRTCBluetoothManager private constructor(
      * Use the BluetoothHeadset proxy object (controls the Bluetooth Headset
      * Service via IPC) to update the list of connected devices for the HEADSET
      * profile. The internal state will change to HEADSET_UNAVAILABLE or to
-     * HEADSET_AVAILABLE and |bluetoothDevice| will be mapped to the connected
+     * HEADSET_AVAILABLE and `bluetoothDevice` will be mapped to the connected
      * device if available.
      */
     fun updateDevice() {
@@ -337,8 +359,12 @@ class AppRTCBluetoothManager private constructor(
             val btDevice = devices[0]
             bluetoothDevice = btDevice
             bluetoothState = State.HEADSET_AVAILABLE
-            Timber.d("Connected bluetooth headset: name=%s, state=%s, SCO audio=%b",
-                btDevice.name, stateToString(bluetoothHeadset.getConnectionState(btDevice)), bluetoothHeadset.isAudioConnected(btDevice))
+            Timber.d(
+                "Connected bluetooth headset: name=%s, state=%s, SCO audio=%b",
+                btDevice.name,
+                stateToString(bluetoothHeadset.getConnectionState(btDevice)),
+                bluetoothHeadset.isAudioConnected(btDevice)
+            )
         }
         Timber.d("updateDevice done: BT state=%s", bluetoothState)
     }
@@ -358,19 +384,32 @@ class AppRTCBluetoothManager private constructor(
         context.unregisterReceiver(receiver)
     }
 
-    protected fun getBluetoothProfileProxy(context: Context?, listener: BluetoothProfile.ServiceListener?, profile: Int): Boolean {
+    protected fun getBluetoothProfileProxy(
+        context: Context?,
+        listener: BluetoothProfile.ServiceListener?,
+        profile: Int
+    ): Boolean {
         return bluetoothAdapter?.getProfileProxy(context, listener, profile) ?: false
     }
 
     protected fun hasPermission(permission: String): Boolean {
-        return (context.checkPermission(permission, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED)
+        return (context.checkPermission(
+            permission,
+            Process.myPid(),
+            Process.myUid()
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
     /** Logs the state of the local Bluetooth adapter.  */
     @SuppressLint("HardwareIds")
     protected fun logBluetoothAdapterInfo(localAdapter: BluetoothAdapter) {
-        Timber.d("BluetoothAdapter: enabled=%b, state=%s, name=%s, address=%s",
-            localAdapter.isEnabled, stateToString(localAdapter.state), localAdapter.name, localAdapter.address)
+        Timber.d(
+            "BluetoothAdapter: enabled=%b, state=%s, name=%s, address=%s",
+            localAdapter.isEnabled,
+            stateToString(localAdapter.state),
+            localAdapter.name,
+            localAdapter.address
+        )
         // Log the set of BluetoothDevice objects that are bonded (paired) to the local adapter.
         val pairedDevices = localAdapter.bondedDevices
         if (pairedDevices.isNotEmpty()) {
@@ -415,8 +454,10 @@ class AppRTCBluetoothManager private constructor(
         if (bluetoothState == State.UNINITIALIZED) {
             return
         }
-        Timber.d("bluetoothTimeout: BT state=%s, attempts: %d, SCO is on: %b",
-            bluetoothState, scoConnectionAttempts, isScoOn)
+        Timber.d(
+            "bluetoothTimeout: BT state=%s, attempts: %d, SCO is on: %b",
+            bluetoothState, scoConnectionAttempts, isScoOn
+        )
         if (bluetoothState != State.SCO_CONNECTING) {
             return
         }

@@ -334,6 +334,10 @@ class PeerConnectionClient(
             encoderFactory = SoftwareVideoEncoderFactory()
             decoderFactory = SoftwareVideoDecoderFactory()
         }
+        // Disable encryption for loopback calls.
+        if (peerConnectionParameters.loopback) {
+            options.disableEncryption = true
+        }
         factory = PeerConnectionFactory.builder()
             .setOptions(options)
             .setAudioDeviceModule(adm)
@@ -466,8 +470,6 @@ class PeerConnectionClient(
             it.continualGatheringPolicy = ContinualGatheringPolicy.GATHER_CONTINUALLY
             // Use ECDSA encryption.
             it.keyType = KeyType.ECDSA
-            // Enable DTLS for normal calls and disable for loopback calls.
-            it.enableDtlsSrtp = !peerConnectionParameters.loopback
             it.sdpSemantics = SdpSemantics.UNIFIED_PLAN
         }
         val peerConnection = factory.createPeerConnection(rtcConfig, pcObserver) ?: return
@@ -1061,7 +1063,6 @@ class PeerConnectionClient(
         private const val VIDEO_CODEC_H264_BASELINE = "H264 Baseline"
         private const val VIDEO_CODEC_H264_HIGH = "H264 High"
         private const val VIDEO_CODEC_AV1 = "AV1"
-        private const val VIDEO_CODEC_AV1_SDP_CODEC_NAME = "AV1X"
         private const val AUDIO_CODEC_OPUS = "opus"
         private const val AUDIO_CODEC_ISAC = "ISAC"
         private const val VIDEO_CODEC_PARAM_START_BITRATE = "x-google-start-bitrate"
@@ -1091,7 +1092,7 @@ class PeerConnectionClient(
             return when (parameters.videoCodec) {
                 VIDEO_CODEC_VP8 -> VIDEO_CODEC_VP8
                 VIDEO_CODEC_VP9 -> VIDEO_CODEC_VP9
-                VIDEO_CODEC_AV1 -> VIDEO_CODEC_AV1_SDP_CODEC_NAME
+                VIDEO_CODEC_AV1 -> VIDEO_CODEC_AV1
                 VIDEO_CODEC_H264_HIGH, VIDEO_CODEC_H264_BASELINE -> VIDEO_CODEC_H264
                 else -> VIDEO_CODEC_VP8
             }

@@ -11,7 +11,6 @@ package org.appspot.apprtc
 
 import android.os.Handler
 import okhttp3.*
-import okhttp3.internal.notifyAll
 import okio.ByteString
 import org.appspot.apprtc.util.AsyncHttpURLConnection
 import org.appspot.apprtc.util.AsyncHttpURLConnection.AsyncHttpEvents
@@ -242,7 +241,7 @@ class WebSocketChannelClient(
             try {
                 closeEventLock.lock()
                 closeEvent = true
-                closeEventCondition.notifyAll()
+                closeEventCondition.signalAll()
             } finally {
                 closeEventLock.unlock()
             }

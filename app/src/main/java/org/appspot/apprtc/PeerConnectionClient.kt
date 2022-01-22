@@ -897,6 +897,11 @@ class PeerConnectionClient(
             }
         }
 
+        override fun onIceCandidateError(event: IceCandidateErrorEvent) {
+            Timber.d("IceCandidateError address: %s, port: %d, url: %s, errorCode: %d, errorText: %s",
+                event.address, event.port, event.url, event.errorCode, event.errorText)
+        }
+
         override fun onIceCandidatesRemoved(candidates: Array<out IceCandidate>) {
             executor.execute {
                 events.onIceCandidatesRemoved(candidates.asList())

@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "31.0.0"
-    compileSdk = 31
+    buildToolsVersion = "32.0.0"
+    compileSdk = 32
     defaultConfig {
         applicationId = "org.appspot.apprtc"
         minSdk = 21
-        targetSdk = 31
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,7 +21,6 @@ android {
 
     lint {
         textReport = true
-        textOutput("stdout")
     }
 
     buildTypes {

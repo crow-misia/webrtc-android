@@ -36,8 +36,8 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
-        apiVersion = "1.6"
-        languageVersion = "1.6"
+        apiVersion = "1.7"
+        languageVersion = "1.7"
     }
 
     compileOptions {
@@ -47,7 +47,6 @@ android {
 }
 
 dependencies {
-    implementation(Kotlin.stdlib.jdk8)
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.android)
     implementation(AndroidX.archCore.runtime)
@@ -68,6 +67,6 @@ dependencies {
     implementation("io.github.crow-misia.sdp:sdp:_")
     testImplementation(Testing.junit4)
     androidTestImplementation(Testing.junit4)
-    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.test.ext.junit.ktx)
     androidTestImplementation(AndroidX.test.espresso.core)
 }

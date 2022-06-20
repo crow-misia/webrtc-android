@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:_")
+        classpath(Android.tools.build.gradlePlugin)
     }
 }
 

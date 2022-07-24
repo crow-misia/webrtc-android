@@ -690,7 +690,7 @@ class ConnectActivity : AppCompatActivity() {
         return false
     }
 
-    private val roomListClickListener = OnItemClickListener { adapterView, view, i, l ->
+    private val roomListClickListener = OnItemClickListener { _, view, _, _ ->
         val roomId = (view as TextView).text.toString()
         connectToRoom(
             roomId = roomId,

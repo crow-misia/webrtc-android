@@ -55,7 +55,6 @@ dependencies {
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.fragment.ktx)
     implementation(AndroidX.preference.ktx)
-    implementation(AndroidX.core.ktx)
     implementation(AndroidX.lifecycle.runtimeKtx)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)

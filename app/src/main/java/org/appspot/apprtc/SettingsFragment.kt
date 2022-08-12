@@ -47,6 +47,7 @@ class SettingsFragment : PreferenceFragmentCompat(),
     private val keyprefDisableWebRtcAGCAndHPF by lazy { getString(R.string.pref_disable_webrtc_agc_and_hpf_key) }
     private val keyprefSpeakerphone by lazy { getString(R.string.pref_speakerphone_key) }
     private val keyPrefRoomServerUrl by lazy { getString(R.string.pref_room_server_url_key) }
+    private val keyPrefWebSocketServerUrl by lazy { getString(R.string.pref_websocket_server_url_key) }
     private val keyPrefDisplayHud by lazy { getString(R.string.pref_displayhud_key) }
     private val keyPrefTracing by lazy { getString(R.string.pref_tracing_key) }
     private val keyprefEnabledRtcEventLog by lazy { getString(R.string.pref_enable_rtceventlog_key) }
@@ -105,6 +106,7 @@ class SettingsFragment : PreferenceFragmentCompat(),
             updateSummary(it, keyprefDataId)
             setDataChannelEnable(it)
             updateSummary(it, keyPrefRoomServerUrl)
+            updateSummary(it, keyPrefWebSocketServerUrl)
             updateSummaryB(it, keyPrefDisplayHud)
             updateSummaryB(it, keyPrefTracing)
             updateSummaryB(it, keyprefEnabledRtcEventLog)
@@ -145,7 +147,7 @@ class SettingsFragment : PreferenceFragmentCompat(),
         key: String,
     ) {
         // clang-format off
-        if (key == keyprefResolution || key == keyprefFps || key == keyprefMaxVideoBitrateType || key == keyPrefVideoCodec || key == keyprefStartAudioBitrateType || key == keyPrefAudioCodec || key == keyPrefRoomServerUrl || key == keyprefMaxRetransmitTimeMs || key == keyprefMaxRetransmits || key == keyprefDataProtocol || key == keyprefDataId) {
+        if (key == keyprefResolution || key == keyprefFps || key == keyprefMaxVideoBitrateType || key == keyPrefVideoCodec || key == keyprefStartAudioBitrateType || key == keyPrefAudioCodec || key == keyPrefRoomServerUrl || key == keyPrefWebSocketServerUrl || key == keyprefMaxRetransmitTimeMs || key == keyprefMaxRetransmits || key == keyprefDataProtocol || key == keyprefDataId) {
             updateSummary(sharedPreferences, key)
         } else if (key == keyprefMaxVideoBitrateValue || key == keyprefStartAudioBitrateValue) {
             updateSummaryBitrate(sharedPreferences, key)

@@ -48,7 +48,7 @@ class AsyncHttpURLConnection(
             connection.connectTimeout = HTTP_TIMEOUT_MS
             connection.readTimeout = HTTP_TIMEOUT_MS
             // TODO(glaznev) - query request origin from pref_room_server_url_key preferences.
-            connection.addRequestProperty("origin", HTTP_ORIGIN)
+            connection.addRequestProperty("host", "0.0.0.0")
             var doOutput = false
             if (method == "POST") {
                 doOutput = true
@@ -67,11 +67,7 @@ class AsyncHttpURLConnection(
             // Get response.
             val responseCode = connection.responseCode
             if (responseCode != 200) {
-                events.onHttpError(
-                    "Non-200 response to $method to URL: $url : " + connection.getHeaderField(
-                        null
-                    )
-                )
+                events.onHttpError("Non-200 response to $method to URL: $url : ${connection.getHeaderField(null)}")
                 connection.disconnect()
                 return
             }

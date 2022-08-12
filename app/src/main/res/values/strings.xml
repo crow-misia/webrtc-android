@@ -35,6 +35,17 @@
     <string name="pref_room_key">room_preference</string>
     <string name="pref_room_list_key">room_list_preference</string>
 
+    <string name="pref_server_key">server_preference</string>
+    <string name="pref_server_title">WebRTC Server settings.</string>
+
+    <string name="pref_server_host_key">server_host_preference</string>
+    <string name="pref_server_host_title">Hostname.</string>
+    <string name="pref_server_host_dlg">Enter hostname.</string>
+
+    <string name="pref_server_port_key">server_port_preference</string>
+    <string name="pref_server_port_title">Port.</string>
+    <string name="pref_server_port_dlg">Enter port.</string>
+
     <string name="pref_videosettings_key">video_settings_key</string>
     <string name="pref_videosettings_title">WebRTC video settings.</string>
 
@@ -207,6 +218,11 @@
     <string name="pref_room_server_url_title">Room server URL.</string>
     <string name="pref_room_server_url_dlg">Enter a room server URL.</string>
     <string name="pref_room_server_url_default" translatable="false">https://appr.tc</string>
+
+    <string name="pref_websocket_server_url_key">websocket_server_url_preference</string>
+    <string name="pref_websocket_server_url_title">Websocket server URL.</string>
+    <string name="pref_websocket_server_url_dlg">Enter a websocket server URL.</string>
+    <string name="pref_websocket_server_url_default" translatable="false"></string>
 
     <string name="pref_displayhud_key">displayhud_preference</string>
     <string name="pref_displayhud_title">Display call statistics.</string>

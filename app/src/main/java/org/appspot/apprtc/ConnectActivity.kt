@@ -58,6 +58,7 @@ class ConnectActivity : AppCompatActivity() {
     private val keyprefAudioBitrateType: String by lazy { getString(R.string.pref_startaudiobitrate_key) }
     private val keyprefAudioBitrateValue: String by lazy { getString(R.string.pref_startaudiobitratevalue_key) }
     private val keyprefRoomServerUrl: String by lazy { getString(R.string.pref_room_server_url_key) }
+    private val keyprefWebSocketServerUrl: String by lazy { getString(R.string.pref_websocket_server_url_key) }
     private val keyprefRoom: String by lazy { getString(R.string.pref_room_key) }
     private val keyprefRoomList: String by lazy { getString(R.string.pref_room_list_key) }
     private val roomList = arrayListOf<String>()
@@ -356,6 +357,10 @@ class ConnectActivity : AppCompatActivity() {
             keyprefRoomServerUrl,
             getString(R.string.pref_room_server_url_default)
         )
+        val webSocketServerUrl = sharedPref.getString(
+            keyprefWebSocketServerUrl,
+            getString(R.string.pref_websocket_server_url_default)
+        )
 
         // Video call enabled flag.
         val videoCallEnabled = sharedPrefGetBoolean(
@@ -595,6 +600,13 @@ class ConnectActivity : AppCompatActivity() {
             val intent = Intent(this, CallActivity::class.java)
             intent.data = uri
             intent.putExtra(CallActivity.EXTRA_ROOMID, newRoomId)
+            if (webSocketServerUrl?.isNotBlank() == true && validateUrl(webSocketServerUrl)) {
+                val webSocketUri = Uri.parse(webSocketServerUrl)
+                val wstls = URLUtil.isHttpsUrl(webSocketServerUrl)
+                intent.putExtra(CallActivity.EXTRA_URLPARAMETERS,
+                    "wshpp=%s:%s&wstls=%b&ts=".format(webSocketUri.host, webSocketUri.port, wstls)
+                )
+            }
             intent.putExtra(CallActivity.EXTRA_LOOPBACK, loopback)
             intent.putExtra(CallActivity.EXTRA_VIDEO_CALL, videoCallEnabled)
             intent.putExtra(CallActivity.EXTRA_SCREENCAPTURE, useScreencapture)

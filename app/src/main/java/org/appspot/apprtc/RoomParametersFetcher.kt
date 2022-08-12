@@ -168,10 +168,7 @@ class RoomParametersFetcher(
         connection.readTimeout = TURN_HTTP_TIMEOUT_MS
         val responseCode = connection.responseCode
         if (responseCode != 200) {
-            throw IOException(
-                "Non-200 response when requesting TURN server from " + url + " : "
-                        + connection.getHeaderField(null)
-            )
+            throw IOException("Non-200 response when requesting TURN server from $url : ${connection.getHeaderField(null)}")
         }
         val responseStream = connection.inputStream
         val response = drainStream(responseStream)

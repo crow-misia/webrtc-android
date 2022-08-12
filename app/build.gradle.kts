@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "32.0.0"
-    compileSdk = 32
+    buildToolsVersion = "33.0.0"
+    compileSdk = 33
     defaultConfig {
         applicationId = "org.appspot.apprtc"
         minSdk = 21

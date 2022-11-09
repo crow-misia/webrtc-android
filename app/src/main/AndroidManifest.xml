@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="org.appspot.apprtc">
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -13,7 +12,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- This is a test application that should always be debuggable. -->
@@ -24,9 +22,7 @@
                  android:debuggable="true"
                  android:supportsRtl="false"
                  tools:ignore="HardcodedDebugMode">
-
         <activity android:name="ConnectActivity"
-                  android:label="@string/app_name"
                   android:exported="true"
                   android:windowSoftInputMode="adjustPan"
                   android:theme="@style/AppTheme">

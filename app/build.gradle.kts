@@ -8,8 +8,9 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "org.appspot.apprtc"
+        namespace = "org.appspot.apprtc"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,15 +56,15 @@ dependencies {
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.fragment.ktx)
     implementation(AndroidX.preference.ktx)
-    implementation(AndroidX.lifecycle.runtimeKtx)
+    implementation(AndroidX.lifecycle.runtime.ktx)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(Square.OkHttp3.okHttp)
     implementation(Square.okio)
     implementation(JakeWharton.timber)
-    implementation("com.github.crow-misia:libwebrtc-bin:_")
-    implementation("io.github.crow-misia.sdp:sdp:_")
+    implementation(libs.libwebrtc.bin)
+    implementation(libs.sdp)
     testImplementation(Testing.junit4)
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(AndroidX.test.ext.junit.ktx)

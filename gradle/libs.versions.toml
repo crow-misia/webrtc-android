@@ -2,13 +2,13 @@
 
 [plugins]
 
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.7.20" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.7.22" }
 
 gradle = { id = "gradle", version = "7.3.1" }
 
 [versions]
 
-kotlin = "1.7.20"
+kotlin = "1.7.22"
 
 androidx-databinding = "7.3.1"
 
@@ -18,6 +18,6 @@ org-jacoco-ant = "org.jacoco:org.jacoco.ant:0.8.8"
 
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }
 
-libwebrtc-bin = "com.github.crow-misia:libwebrtc-bin:108.5359.5.0"
+libwebrtc-bin = "com.github.crow-misia:libwebrtc-bin:109.5414.2.0"
 
 sdp = "io.github.crow-misia.sdp:sdp:1.0.0"

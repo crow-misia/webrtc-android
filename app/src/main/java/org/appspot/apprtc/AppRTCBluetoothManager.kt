@@ -14,6 +14,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,9 +22,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.media.AudioManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
+import androidx.core.content.getSystemService
 import org.appspot.apprtc.util.AppRTCUtils.getThreadInfo
 import org.webrtc.ThreadUtils
 import timber.log.Timber
@@ -57,6 +62,7 @@ class AppRTCBluetoothManager private constructor(
     var scoConnectionAttempts = 0
     private var bluetoothState = State.UNINITIALIZED
     private val bluetoothServiceListener = BluetoothServiceListener()
+    private val bluetoothManager by lazy { context.getSystemService<BluetoothManager>() }
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothHeadset: BluetoothHeadset? = null
     private var bluetoothDevice: BluetoothDevice? = null
@@ -200,10 +206,12 @@ class AppRTCBluetoothManager private constructor(
      * Note that the AppRTCAudioManager is also involved in driving this state
      * change.
      */
+    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun start() {
         ThreadUtils.checkIsOnMainThread()
         Timber.d("start")
-        if (!hasPermission(Manifest.permission.BLUETOOTH)) {
+        if (!hasPermission(Manifest.permission.BLUETOOTH) || !hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
             Timber.w("Process (pid=%d) lacks BLUETOOTH permission", Process.myPid())
             return
         }
@@ -215,7 +223,7 @@ class AppRTCBluetoothManager private constructor(
         bluetoothDevice = null
         scoConnectionAttempts = 0
         // Get a handle to the default local Bluetooth adapter.
-        val adapter = BluetoothAdapter.getDefaultAdapter() ?: run {
+        val adapter = bluetoothManager?.adapter ?: run {
             Timber.w("Device does not support Bluetooth")
             return
         }
@@ -340,6 +348,8 @@ class AppRTCBluetoothManager private constructor(
      * HEADSET_AVAILABLE and `bluetoothDevice` will be mapped to the connected
      * device if available.
      */
+    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun updateDevice() {
         val bluetoothHeadset = bluetoothHeadset
         if (bluetoothState == State.UNINITIALIZED || bluetoothHeadset == null) {
@@ -402,6 +412,8 @@ class AppRTCBluetoothManager private constructor(
 
     /** Logs the state of the local Bluetooth adapter.  */
     @SuppressLint("HardwareIds")
+    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     protected fun logBluetoothAdapterInfo(localAdapter: BluetoothAdapter) {
         Timber.d(
             "BluetoothAdapter: enabled=%b, state=%s, name=%s, address=%s",
@@ -448,6 +460,8 @@ class AppRTCBluetoothManager private constructor(
      * Called when start of the BT SCO channel takes too long time. Usually
      * happens when the BT device has been turned on during an ongoing call.
      */
+    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun bluetoothTimeout() {
         ThreadUtils.checkIsOnMainThread()
         val bluetoothHeadset = bluetoothHeadset ?: return

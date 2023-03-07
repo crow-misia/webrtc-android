@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "33.0.0"
+    buildToolsVersion = "33.0.2"
     compileSdk = 33
     defaultConfig {
         applicationId = "org.appspot.apprtc"
@@ -37,8 +37,8 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
-        apiVersion = "1.7"
-        languageVersion = "1.7"
+        apiVersion = "1.8"
+        languageVersion = "1.8"
     }
 
     compileOptions {
@@ -60,6 +60,7 @@ dependencies {
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
+    implementation(AndroidX.window)
     implementation(Square.OkHttp3.okHttp)
     implementation(Square.okio)
     implementation(JakeWharton.timber)

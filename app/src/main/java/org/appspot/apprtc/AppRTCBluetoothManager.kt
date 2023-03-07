@@ -390,11 +390,11 @@ class AppRTCBluetoothManager private constructor(
         context.registerReceiver(receiver, filter)
     }
 
-    protected fun unregisterReceiver(receiver: BroadcastReceiver) {
+    private fun unregisterReceiver(receiver: BroadcastReceiver) {
         context.unregisterReceiver(receiver)
     }
 
-    protected fun getBluetoothProfileProxy(
+    private fun getBluetoothProfileProxy(
         context: Context?,
         listener: BluetoothProfile.ServiceListener?,
         profile: Int
@@ -402,7 +402,7 @@ class AppRTCBluetoothManager private constructor(
         return bluetoothAdapter?.getProfileProxy(context, listener, profile) ?: false
     }
 
-    protected fun hasPermission(permission: String): Boolean {
+    private fun hasPermission(permission: String): Boolean {
         return (context.checkPermission(
             permission,
             Process.myPid(),
@@ -414,7 +414,7 @@ class AppRTCBluetoothManager private constructor(
     @SuppressLint("HardwareIds")
     @RequiresApi(Build.VERSION_CODES.S)
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    protected fun logBluetoothAdapterInfo(localAdapter: BluetoothAdapter) {
+    private fun logBluetoothAdapterInfo(localAdapter: BluetoothAdapter) {
         Timber.d(
             "BluetoothAdapter: enabled=%b, state=%s, name=%s, address=%s",
             localAdapter.isEnabled,

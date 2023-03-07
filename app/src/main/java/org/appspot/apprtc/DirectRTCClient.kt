@@ -157,7 +157,7 @@ class DirectRTCClient(private val events: SignalingEvents) : AppRTCClient, TCPCh
             // Ice servers are not needed for direct connections.
             val parameters = SignalingParameters(
                 iceServers = arrayListOf(),
-                initiator = server,  // Server side acts as the initiator on direct connections.
+                initiator = true,  // Server side acts as the initiator on direct connections.
                 clientId = null,  // clientId
                 wssUrl = "",  // wssUrl
                 wssPostUrl = "",  // wssPostUrl

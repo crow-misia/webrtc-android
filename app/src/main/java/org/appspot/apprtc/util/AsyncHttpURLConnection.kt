@@ -68,7 +68,7 @@ class AsyncHttpURLConnection(
             val responseCode = connection.responseCode
             if (responseCode != 200) {
                 events.onHttpError(
-                    "Non-200 response to " + method + " to URL: " + url + " : " + connection.getHeaderField(
+                    "Non-200 response to $method to URL: $url : " + connection.getHeaderField(
                         null
                     )
                 )

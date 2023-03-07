@@ -9,12 +9,10 @@
  */
 package org.appspot.apprtc
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
@@ -22,7 +20,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
@@ -85,7 +82,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
     override fun onCreate(savedInstanceState: Bundle?) {
         // Set window styles for fullscreen-window size. Needs to be done before
         // adding content.
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
         super.onCreate(savedInstanceState)
 
@@ -273,7 +270,6 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun getDisplayMetrics(): DisplayMetrics? {
         val windowManager: WindowManager = application.getSystemService() ?: return null
         val displayMetrics = DisplayMetrics()
@@ -281,7 +277,6 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         return displayMetrics
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startScreenCapture() {
         val mediaProjectionManager: MediaProjectionManager =
             application.getSystemService() ?: return
@@ -291,6 +286,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         )
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -340,7 +336,6 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         return null
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun createScreenCapturer(): VideoCapturer? {
         if (mediaProjectionPermissionResultCode != RESULT_OK) {
             reportError("User didn't give permission to capture the screen.")
@@ -761,7 +756,6 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         reportError(description)
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     companion object {
         const val EXTRA_ROOMID = "org.appspot.apprtc.ROOMID"
         const val EXTRA_URLPARAMETERS = "org.appspot.apprtc.URLPARAMETERS"

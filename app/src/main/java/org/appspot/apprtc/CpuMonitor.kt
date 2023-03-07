@@ -9,7 +9,6 @@
  */
 package org.appspot.apprtc
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -22,7 +21,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
@@ -72,7 +70,6 @@ import java.util.concurrent.TimeUnit
  * correct value, and then returns to back to correct reading.  Both when
  * jumping up and back down we might create faulty CPU load readings.
  */
-@TargetApi(Build.VERSION_CODES.KITKAT)
 internal class CpuMonitor(private val context: Context) {
     // User CPU usage at current frequency.
     private val userCpuUsage: MovingAverage

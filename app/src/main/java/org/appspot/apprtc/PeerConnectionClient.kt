@@ -348,7 +348,7 @@ class PeerConnectionClient(
         adm.release()
     }
 
-    fun createJavaAudioDevice(): AudioDeviceModule {
+    private fun createJavaAudioDevice(): AudioDeviceModule {
         // Enable/disable OpenSL ES playback.
         if (!peerConnectionParameters.useOpenSLES) {
             Timber.w("External OpenSLES ADM not implemented yet.")
@@ -726,7 +726,7 @@ class PeerConnectionClient(
                 Timber.d("Stop video source.")
                 try {
                     videoCapturer.stopCapture()
-                } catch (e: InterruptedException) {
+                } catch (_: InterruptedException) {
                 }
                 videoCapturerStopped = true
             }
@@ -1158,7 +1158,7 @@ class PeerConnectionClient(
             // The format of the media description line should be: m=<media> <port> <proto> <fmt> ...
             val formats = mediaDescription.formats
             // Reconstruct the line with `preferredPayloadTypes` moved to the beginning of the payload types.
-            formats.removeAll(preferredPayloadTypes)
+            formats.removeAll(preferredPayloadTypes.toSet())
             formats.addAll(0, preferredPayloadTypes)
         }
 

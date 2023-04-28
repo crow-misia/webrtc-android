@@ -1073,8 +1073,6 @@ class PeerConnectionClient(
         private const val VIDEO_CODEC_PARAM_START_BITRATE = "x-google-start-bitrate"
         private const val VIDEO_FLEXFEC_FIELDTRIAL =
             "WebRTC-FlexFEC-03-Advertised/Enabled/WebRTC-FlexFEC-03/Enabled/"
-        private const val VIDEO_VP8_INTEL_HW_ENCODER_FIELDTRIAL =
-            "WebRTC-IntelVP8/Enabled/"
         private const val DISABLE_WEBRTC_AGC_FIELDTRIAL =
             "WebRTC-Audio-MinimizeResamplingOnMobile/Enabled/"
         private const val AUDIO_CODEC_PARAM_BITRATE = "maxaveragebitrate"
@@ -1109,7 +1107,6 @@ class PeerConnectionClient(
                     append(VIDEO_FLEXFEC_FIELDTRIAL)
                     Timber.d("Enable FlexFEC field trial.")
                 }
-                append(VIDEO_VP8_INTEL_HW_ENCODER_FIELDTRIAL)
                 if (peerConnectionParameters.disableWebRtcAGCAndHPF) {
                     append(DISABLE_WEBRTC_AGC_FIELDTRIAL)
                     Timber.d("Disable WebRTC AGC field trial.")

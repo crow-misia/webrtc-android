@@ -4,11 +4,10 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "33.0.2"
+    namespace = "org.appspot.apprtc"
     compileSdk = 33
     defaultConfig {
         applicationId = "org.appspot.apprtc"
-        namespace = "org.appspot.apprtc"
         minSdk = 21
         targetSdk = 33
         versionCode = 1

@@ -144,17 +144,22 @@ class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onSharedPreferenceChanged(
         sharedPreferences: SharedPreferences,
-        key: String,
+        key: String?,
     ) {
         // clang-format off
-        if (key == keyprefResolution || key == keyprefFps || key == keyprefMaxVideoBitrateType || key == keyPrefVideoCodec || key == keyprefStartAudioBitrateType || key == keyPrefAudioCodec || key == keyPrefRoomServerUrl || key == keyPrefWebSocketServerUrl || key == keyprefMaxRetransmitTimeMs || key == keyprefMaxRetransmits || key == keyprefDataProtocol || key == keyprefDataId) {
-            updateSummary(sharedPreferences, key)
-        } else if (key == keyprefMaxVideoBitrateValue || key == keyprefStartAudioBitrateValue) {
-            updateSummaryBitrate(sharedPreferences, key)
-        } else if (key == keyprefVideoCall || key == keyprefScreencapture || key == keyprefCamera2 || key == keyPrefTracing || key == keyprefCaptureQualitySlider || key == keyprefHwCodec || key == keyprefCaptureToTexture || key == keyprefFlexfec || key == keyprefNoAudioProcessing || key == keyprefAecDump || key == keyprefEnableSaveInputAudioToFile || key == keyprefOpenSLES || key == keyprefDisableBuiltInAEC || key == keyprefDisableBuiltInAGC || key == keyprefDisableBuiltInNS || key == keyprefDisableWebRtcAGCAndHPF || key == keyPrefDisplayHud || key == keyprefEnableDataChannel || key == keyprefOrdered || key == keyprefNegotiated || key == keyprefEnabledRtcEventLog) {
-            updateSummaryB(sharedPreferences, key)
-        } else if (key == keyprefSpeakerphone) {
-            updateSummaryList(key)
+        when (key) {
+            keyprefResolution, keyprefFps, keyprefMaxVideoBitrateType, keyPrefVideoCodec, keyprefStartAudioBitrateType, keyPrefAudioCodec, keyPrefRoomServerUrl, keyPrefWebSocketServerUrl, keyprefMaxRetransmitTimeMs, keyprefMaxRetransmits, keyprefDataProtocol, keyprefDataId -> {
+                updateSummary(sharedPreferences, key)
+            }
+            keyprefMaxVideoBitrateValue, keyprefStartAudioBitrateValue -> {
+                updateSummaryBitrate(sharedPreferences, key)
+            }
+            keyprefVideoCall, keyprefScreencapture, keyprefCamera2, keyPrefTracing, keyprefCaptureQualitySlider, keyprefHwCodec, keyprefCaptureToTexture, keyprefFlexfec, keyprefNoAudioProcessing, keyprefAecDump, keyprefEnableSaveInputAudioToFile, keyprefOpenSLES, keyprefDisableBuiltInAEC, keyprefDisableBuiltInAGC, keyprefDisableBuiltInNS, keyprefDisableWebRtcAGCAndHPF, keyPrefDisplayHud, keyprefEnableDataChannel, keyprefOrdered, keyprefNegotiated, keyprefEnabledRtcEventLog -> {
+                updateSummaryB(sharedPreferences, key)
+            }
+            keyprefSpeakerphone -> {
+                updateSummaryList(key)
+            }
         }
         // clang-format on
         if (key == keyprefMaxVideoBitrateType) {

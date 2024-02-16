@@ -13,7 +13,7 @@ import android.content.Context
 import android.os.ParcelFileDescriptor
 import io.github.crow_misia.sdp.SdpMediaDescription
 import io.github.crow_misia.sdp.SdpSessionDescription
-import io.github.crow_misia.sdp.attribute.FormatAttribute
+import io.github.crow_misia.sdp.attribute.FmtpAttribute
 import io.github.crow_misia.sdp.attribute.RTPMapAttribute
 import io.github.crow_misia.sdp.getAttribute
 import io.github.crow_misia.sdp.getAttributes
@@ -1132,7 +1132,7 @@ class PeerConnectionClient(
                 .forEach { (media, rtmp) ->
                     // Check if a=fmtp string already exist in remote SDP for this codec and
                     // update it with new bitrate parameter.
-                    media.getAttributes<FormatAttribute>()
+                    media.getAttributes<FmtpAttribute>()
                         .filter { it.format == rtmp.payloadType }
                         .forEach {
                             Timber.d("Found %s %s", codec, it)

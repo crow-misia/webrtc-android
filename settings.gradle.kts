@@ -1,5 +1,22 @@
-plugins {
-    id("de.fayard.refreshVersions") version "0.51.0"
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
 }
 
-include("app")
+plugins {
+    id("de.fayard.refreshVersions") version "0.60.5"
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+    }
+}
+
+include(":app")

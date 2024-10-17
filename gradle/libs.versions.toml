@@ -8,69 +8,67 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.5" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [versions]
 
-android-gradle-plugin = "8.2.2"
+android-gradle-plugin = "8.7.1"
 
-kotlin = "1.9.22"
+android-tools-desugar_jdk_libs = "2.1.2"
 
-kotlinx-coroutines = "1.8.0"
+androidx-activity = "1.9.3"
 
-android-tools-desugar_jdk_libs = "2.0.4"
+androidx-annotation = "1.9.0"
 
-androidx-activity = "1.9.0-alpha03"
+androidx-appcompat = "1.7.0"
 
-androidx-appcompat = "1.7.0-alpha03"
+androidx-core = "1.13.1"
 
-androidx-core = "1.13.0-alpha05"
+androidx-fragment = "1.8.4"
 
-androidx-fragment = "1.7.0-alpha10"
-
-androidx-lifecycle = "2.8.0-alpha01"
+androidx-lifecycle = "2.8.6"
 
 androidx-preference = "1.2.1"
 
-androidx-window = "1.3.0-alpha02"
+androidx-test-espresso = "3.6.1"
 
-androidx-test-ext-junit = "1.2.0-alpha03"
+androidx-test-ext-junit = "1.2.1"
 
-androidx-test-ext-truth = "1.6.0-alpha03"
+androidx-test-ext-truth = "1.6.0"
 
-androidx-test-espresso = "3.6.0-alpha03"
+androidx-test-runner = "1.6.2"
 
-androidx-test-runner = "1.6.0-alpha06"
+androidx-test-rules = "1.6.1"
 
-androidx-test-rules = "1.6.0-alpha03"
+androidx-window = "1.3.0"
 
-okhttp3 = "5.0.0-alpha.12"
+detekt = "1.23.7"
 
-okio = "3.8.0"
+kotest = "5.9.1"
+
+kotlin = "2.0.21"
+
+kotlinx-coroutines = "1.9.0"
+
+libwebrtc = "130.6723.2.0"
+
+mockk = "1.13.13"
+
+okhttp3 = "5.0.0-alpha.14"
+
+okio = "3.9.1"
+
+sdp = "1.4.0"
 
 timber = "5.0.1"
 
-kotest = "5.8.0"
-
-mockk = "1.13.9"
-
-truth = "1.4.0"
+truth = "1.4.4"
 
 [libraries]
 
-kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
-
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" }
-
-kotlinx-coroutines-bom = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-bom", version.ref = "kotlinx-coroutines" }
-
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android" }
-
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
-
-androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.7.1" }
-
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
+
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 
@@ -88,17 +86,17 @@ androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name =
 
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidx-preference" }
 
-androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
 
 androidx-test-ext-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidx-test-ext-junit" }
 
 androidx-test-ext-truth = { group = "androidx.test.ext", name = "truth", version.ref = "androidx-test-ext-truth" }
 
-androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
-
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
 
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test-rules" }
+
+androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
 
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-tools-desugar_jdk_libs" }
 
@@ -108,13 +106,21 @@ kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core",
 
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 
+kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
+
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" }
+
+kotlinx-coroutines-bom = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-bom", version.ref = "kotlinx-coroutines" }
+
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android" }
+
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
+
+libwebrtc-bin = { group = "com.github.crow-misia", name = "libwebrtc-bin", version.ref = "libwebrtc" }
+
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
-
-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 okhttp3-android = { group = "com.squareup.okhttp3", name = "okhttp-android", version.ref = "okhttp3" }
 
@@ -122,6 +128,8 @@ okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-
 
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 
-libwebrtc-bin = "com.github.crow-misia:libwebrtc-bin:121.6167.6.0"
+sdp = { group = "io.github.crow-misia.sdp", name = "sdp", version.ref = "sdp" }
 
-sdp = "io.github.crow-misia.sdp:sdp:1.2.0"
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }

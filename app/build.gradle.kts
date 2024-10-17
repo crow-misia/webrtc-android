@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "org.appspot.apprtc"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.appspot.apprtc"

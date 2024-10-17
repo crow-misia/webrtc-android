@@ -44,6 +44,7 @@ android {
 
     lint {
         textReport = true
+        baseline = file("lint-baseline.xml")
     }
 
     kapt {

@@ -948,8 +948,8 @@ class PeerConnectionClient(
             Timber.d("Selected candidate pair changed because: %s", event.reason)
         }
 
-        override fun onAddStream(stream: MediaStream) {}
-        override fun onRemoveStream(stream: MediaStream) {}
+        override fun onAddStream(stream: MediaStream) = Unit
+        override fun onRemoveStream(stream: MediaStream) = Unit
         override fun onDataChannel(dc: DataChannel) {
             Timber.d("New Data channel %s", dc.label())
             if (!dataChannelEnabled) return
@@ -981,9 +981,9 @@ class PeerConnectionClient(
             // signaling/negotiation protocol.
         }
 
-        override fun onAddTrack(receiver: RtpReceiver, mediaStreams: Array<MediaStream>) {}
+        override fun onAddTrack(receiver: RtpReceiver, mediaStreams: Array<MediaStream>) = Unit
 
-        override fun onRemoveTrack(receiver: RtpReceiver) {}
+        override fun onRemoveTrack(receiver: RtpReceiver) = Unit
     }
 
     // Implementation detail: handle offer creation/signaling and answer setting,

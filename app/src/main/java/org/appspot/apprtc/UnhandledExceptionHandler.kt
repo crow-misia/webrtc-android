@@ -71,5 +71,4 @@ class UnhandledExceptionHandler(private val activity: AppCompatActivity) :
             return writer.toString()
         }
     }
-
 }

@@ -741,7 +741,7 @@ class CallActivity : AppCompatActivity(), SignalingEvents, PeerConnectionEvents,
         }
     }
 
-    override fun onPeerConnectionClosed() {}
+    override fun onPeerConnectionClosed() = Unit
 
     override fun onPeerConnectionStatsReady(report: RTCStatsReport) {
         runOnUiThread {

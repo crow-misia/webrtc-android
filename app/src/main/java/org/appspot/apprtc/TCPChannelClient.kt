@@ -109,7 +109,7 @@ class TCPChannelClient(
 
             // Receive connection to temporary variable first, so we don't block.
             val tempSocket = connect()
-            val `in`: BufferedReader
+            val inr: BufferedReader
             Timber.d("TCP connection established.")
             try {
                 rawSocketLock.lock()
@@ -121,9 +121,9 @@ class TCPChannelClient(
                 // Connecting failed, error has already been reported, just exit.
                 val rawSocket = rawSocket ?: return
                 out = rawSocket.getOutputStream().bufferedWriter(Charsets.UTF_8)
-                `in` = rawSocket.getInputStream().bufferedReader(Charsets.UTF_8)
+                inr = rawSocket.getInputStream().bufferedReader(Charsets.UTF_8)
             } catch (e: IOException) {
-                reportError("Failed to open IO on rawSocket: " + e.message)
+                reportError("Failed to open IO on rawSocket: ${e.message}")
                 return
             } finally {
                 rawSocketLock.unlock()
@@ -135,7 +135,7 @@ class TCPChannelClient(
             }
             while (true) {
                 val message: String? = try {
-                    `in`.readLine()
+                    inr.readLine()
                 } catch (e: IOException) {
                     try {
                         rawSocketLock.lock()
@@ -144,7 +144,7 @@ class TCPChannelClient(
                     } finally {
                         rawSocketLock.unlock()
                     }
-                    reportError("Failed to read from rawSocket: " + e.message)
+                    reportError("Failed to read from rawSocket: ${e.message}")
                     break
                 }
 

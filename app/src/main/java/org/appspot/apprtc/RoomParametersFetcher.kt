@@ -218,5 +218,4 @@ class RoomParametersFetcher(
             return if (s.hasNext()) s.next() else ""
         }
     }
-
 }

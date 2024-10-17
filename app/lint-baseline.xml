@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.7.1" type="baseline" client="gradle" dependencies="false" name="AGP (8.7.1)" variant="all" version="8.7.1">
+
+    <issue
+        id="MissingPermission"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
+        errorLine1="        bluetoothManager.start()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="215"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
+        errorLine1="            bluetoothManager.updateDevice()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="397"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
+        errorLine1="            bluetoothManager.updateDevice()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="464"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingPermission"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
+        errorLine1="    private val bluetoothTimeoutRunnable = Runnable { bluetoothTimeout() }"
+        errorLine2="                                                      ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCBluetoothManager.kt"
+            line="74"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 21): `start`"
+        errorLine1="        bluetoothManager.start()"
+        errorLine2="                         ~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="215"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 21): `updateDevice`"
+        errorLine1="            bluetoothManager.updateDevice()"
+        errorLine2="                             ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="397"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 21): `updateDevice`"
+        errorLine1="            bluetoothManager.updateDevice()"
+        errorLine2="                             ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="464"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 21): `bluetoothTimeout`"
+        errorLine1="    private val bluetoothTimeoutRunnable = Runnable { bluetoothTimeout() }"
+        errorLine2="                                                      ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCBluetoothManager.kt"
+            line="74"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="        targetSdk = 34"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="18"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RedundantLabel"
+        message="Redundant label can be removed"
+        errorLine1="            android:label=&quot;@string/app_name&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="52"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`receiver` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint"
+        errorLine1="        context.registerReceiver(receiver, filter)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCAudioManager.kt"
+            line="316"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`receiver` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint"
+        errorLine1="        context.registerReceiver(receiver, filter)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/appspot/apprtc/AppRTCBluetoothManager.kt"
+            line="390"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="DiscouragedApi"
+        message="Should not restrict activity to fixed orientation. This may not be suitable for different form factors, causing the app to be letterboxed."
+        errorLine1="            android:screenOrientation=&quot;fullUser&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="53"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="DiscouragedApi"
+        message="Use of `scheduleAtFixedRate` is strongly discouraged because it can lead to unexpected behavior when Android processes become cached (tasks may unexpectedly execute hundreds or thousands of times in quick succession when a process changes from cached to uncached); prefer using `scheduleWithFixedDelay`"
+        errorLine1="        val possiblyIgnoredError = executor.scheduleAtFixedRate("
+        errorLine2="                                   ^">
+        <location
+            file="src/main/java/org/appspot/apprtc/CpuMonitor.kt"
+            line="186"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Action Bar icons should use a single gray color (`#333333` for light themes (with 60%/30% opacity for enabled/disabled), and `#FFFFFF` with opacity 80%/30% for dark themes">
+        <location
+            file="src/main/res/drawable-hdpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Action Bar icons should use a single gray color (`#333333` for light themes (with 60%/30% opacity for enabled/disabled), and `#FFFFFF` with opacity 80%/30% for dark themes">
+        <location
+            file="src/main/res/drawable-ldpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Action Bar icons should use a single gray color (`#333333` for light themes (with 60%/30% opacity for enabled/disabled), and `#FFFFFF` with opacity 80%/30% for dark themes">
+        <location
+            file="src/main/res/drawable-mdpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconColors"
+        message="Action Bar icons should use a single gray color (`#333333` for light themes (with 60%/30% opacity for enabled/disabled), and `#FFFFFF` with opacity 80%/30% for dark themes">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        message="The image `disconnect.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-hdpi/disconnect.png: 30x30 dp (45x45 px), drawable-ldpi/disconnect.png: 60x60 dp (45x45 px), drawable-mdpi/disconnect.png: 45x45 dp (45x45 px), drawable-xhdpi/disconnect.png: 23x23 dp (45x45 px)">
+        <location
+            file="src/main/res/drawable-xhdpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/disconnect.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        message="The image `ic_action_full_screen.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-hdpi/ic_action_full_screen.png: 32x32 dp (48x48 px), drawable-ldpi/ic_action_full_screen.png: 43x43 dp (32x32 px), drawable-mdpi/ic_action_full_screen.png: 32x32 dp (32x32 px), drawable-xhdpi/ic_action_full_screen.png: 32x32 dp (64x64 px)">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_action_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/ic_action_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/ic_action_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_action_full_screen.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        message="The image `ic_action_return_from_full_screen.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-hdpi/ic_action_return_from_full_screen.png: 32x32 dp (48x48 px), drawable-ldpi/ic_action_return_from_full_screen.png: 43x43 dp (32x32 px), drawable-mdpi/ic_action_return_from_full_screen.png: 32x32 dp (32x32 px), drawable-xhdpi/ic_action_return_from_full_screen.png: 32x32 dp (64x64 px)">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_action_return_from_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/ic_action_return_from_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/ic_action_return_from_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_action_return_from_full_screen.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        message="The image `ic_loopback_call.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-hdpi/ic_loopback_call.png: 64x64 dp (96x96 px), drawable-ldpi/ic_loopback_call.png: 128x128 dp (96x96 px), drawable-mdpi/ic_loopback_call.png: 96x96 dp (96x96 px), drawable-xhdpi/ic_loopback_call.png: 48x48 dp (96x96 px)">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicatesConfig"
+        message="The `disconnect.png` icon has identical contents in the following configuration folders: drawable-hdpi, drawable-ldpi, drawable-mdpi, drawable-xhdpi">
+        <location
+            file="src/main/res/drawable-xhdpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/disconnect.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/disconnect.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicatesConfig"
+        message="The `ic_action_full_screen.png` icon has identical contents in the following configuration folders: drawable-ldpi, drawable-mdpi">
+        <location
+            file="src/main/res/drawable-mdpi/ic_action_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_action_full_screen.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicatesConfig"
+        message="The `ic_action_return_from_full_screen.png` icon has identical contents in the following configuration folders: drawable-ldpi, drawable-mdpi">
+        <location
+            file="src/main/res/drawable-mdpi/ic_action_return_from_full_screen.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_action_return_from_full_screen.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicatesConfig"
+        message="The `ic_loopback_call.png` icon has identical contents in the following configuration folders: drawable-hdpi, drawable-ldpi, drawable-mdpi, drawable-xhdpi">
+        <location
+            file="src/main/res/drawable-xhdpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-mdpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-ldpi/ic_loopback_call.png"/>
+        <location
+            file="src/main/res/drawable-hdpi/ic_loopback_call.png"/>
+    </issue>
+
+    <issue
+        id="IconMissingDensityFolder"
+        message="Missing density variation folders in `src/main/res`: drawable-xxhdpi">
+        <location
+            file="src/main/res"/>
+    </issue>
+
+</issues>

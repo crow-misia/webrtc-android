@@ -85,7 +85,6 @@ class AsyncHttpURLConnection(
 
     companion object {
         private const val HTTP_TIMEOUT_MS = 8000
-        private const val HTTP_ORIGIN = "https://appr.tc"
 
         // Return the contents of an InputStream as a String.
         private fun drainStream(source: Reader): String {

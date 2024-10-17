@@ -1,0 +1,117 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:AppRTCAudioManager.kt$AppRTCAudioManager$fun updateAudioDeviceState()</ID>
+    <ID>CyclomaticComplexMethod:CallActivity.kt$CallActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>CyclomaticComplexMethod:ConnectActivity.kt$ConnectActivity$private fun connectToRoom( roomId: String?, commandLineRun: Boolean, loopback: Boolean, useValuesFromIntent: Boolean, runTimeMs: Int )</ID>
+    <ID>CyclomaticComplexMethod:CpuMonitor.kt$CpuMonitor$@Synchronized private fun sampleCpuUtilization(): Boolean</ID>
+    <ID>CyclomaticComplexMethod:PeerConnectionClient.kt$PeerConnectionClient$private fun createPeerConnectionInternal(signalingParameters: SignalingParameters)</ID>
+    <ID>CyclomaticComplexMethod:RoomParametersFetcher.kt$RoomParametersFetcher$private fun roomHttpResponseParse(response: String)</ID>
+    <ID>DoubleMutabilityForCollection:AppRTCAudioManager.kt$AppRTCAudioManager$// Contains a list of available audio devices. A Set collection is used to // avoid duplicate elements. private var audioDevices: MutableSet&lt;AudioDevice&gt; = hashSetOf()</ID>
+    <ID>DoubleMutabilityForCollection:PeerConnectionClient.kt$PeerConnectionClient$// Queued remote ICE candidates are consumed only after both local and // remote descriptions are set. Similarly local ICE candidates are sent to // remote peer after both local and remote description are set. private var queuedRemoteCandidates: MutableList&lt;IceCandidate&gt;? = null</ID>
+    <ID>ExplicitItLambdaParameter:CallActivity.kt$CallActivity${ it -&gt; // When saveRemoteVideoToFile is set we save the video from the remote to a file. val videoOutWidth = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, 0) val videoOutHeight = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT, 0) try { videoFileRenderer = VideoFileRenderer(it, videoOutWidth, videoOutHeight, eglBase.eglBaseContext) .also { renderer -&gt; remoteSinks.add(renderer) } } catch (e: IOException) { throw RuntimeException("Failed to open video file for output: $it", e) } }</ID>
+    <ID>FunctionParameterNaming:RoomParametersFetcher.kt$RoomParametersFetcher.Companion$`in`: InputStream</ID>
+    <ID>LargeClass:ConnectActivity.kt$ConnectActivity : AppCompatActivity</ID>
+    <ID>LongMethod:AppRTCAudioManager.kt$AppRTCAudioManager$fun updateAudioDeviceState()</ID>
+    <ID>LongMethod:AppRTCBluetoothManager.kt$AppRTCBluetoothManager.BluetoothHeadsetBroadcastReceiver$override fun onReceive( context: Context, intent: Intent, )</ID>
+    <ID>LongMethod:CallActivity.kt$CallActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:ConnectActivity.kt$ConnectActivity$private fun connectToRoom( roomId: String?, commandLineRun: Boolean, loopback: Boolean, useValuesFromIntent: Boolean, runTimeMs: Int )</ID>
+    <ID>LongMethod:CpuMonitor.kt$CpuMonitor$@Synchronized private fun sampleCpuUtilization(): Boolean</ID>
+    <ID>LongMethod:PeerConnectionClient.kt$PeerConnectionClient$private fun createPeerConnectionInternal(signalingParameters: SignalingParameters)</ID>
+    <ID>LongMethod:RoomParametersFetcher.kt$RoomParametersFetcher$private fun roomHttpResponseParse(response: String)</ID>
+    <ID>LongMethod:SettingsFragment.kt$SettingsFragment$override fun onResume()</ID>
+    <ID>LongMethod:WebSocketRTCClient.kt$WebSocketRTCClient$override fun onWebSocketMessage(message: String)</ID>
+    <ID>LongParameterList:AppRTCClient.kt$AppRTCClient.SignalingParameters$( val iceServers: List&lt;IceServer&gt;, val initiator: Boolean, val clientId: String?, val wssUrl: String, val wssPostUrl: String, val offerSdp: SessionDescription?, val iceCandidates: List&lt;IceCandidate&gt;, )</ID>
+    <ID>LongParameterList:PeerConnectionClient.kt$PeerConnectionClient.PeerConnectionParameters$( val videoCallEnabled: Boolean, val loopback: Boolean, val tracing: Boolean, val videoWidth: Int, val videoHeight: Int, val videoFps: Int, val videoMaxBitrate: Int, val videoCodec: String?, val videoCodecHwAcceleration: Boolean, val videoFlexfecEnabled: Boolean, val audioStartBitrate: Int, val audioCodec: String?, val noAudioProcessing: Boolean, val aecDump: Boolean, val saveInputAudioToFile: Boolean, val useOpenSLES: Boolean, val disableBuiltInAEC: Boolean, val disableBuiltInAGC: Boolean, val disableBuiltInNS: Boolean, val disableWebRtcAGCAndHPF: Boolean, val enableRtcEventLog: Boolean, val dataChannelParameters: DataChannelParameters?, )</ID>
+    <ID>LoopWithTooManyJumpStatements:TCPChannelClient.kt$TCPChannelClient.TCPSocket$while</ID>
+    <ID>MagicNumber:AsyncHttpURLConnection.kt$AsyncHttpURLConnection$200</ID>
+    <ID>MagicNumber:CallFragment.kt$CallFragment$0.3f</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$100.0</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$1000.0</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$1280</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$144</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$240</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$256</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$3.0</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$30000</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$320</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$360</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$480</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$540</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$640</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$720</ID>
+    <ID>MagicNumber:CaptureQualityController.kt$CaptureQualityController$960</ID>
+    <ID>MagicNumber:ConnectActivity.kt$ConnectActivity$100000000</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$0.5</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$100</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$100f</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$3</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$4</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$5</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$6</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$7</ID>
+    <ID>MagicNumber:CpuMonitor.kt$CpuMonitor$8</ID>
+    <ID>MagicNumber:PeerConnectionClient.kt$PeerConnectionClient$1280</ID>
+    <ID>MagicNumber:PeerConnectionClient.kt$PeerConnectionClient$30</ID>
+    <ID>MagicNumber:PeerConnectionClient.kt$PeerConnectionClient$720</ID>
+    <ID>MagicNumber:PeerConnectionClient.kt$PeerConnectionClient.Companion$1000</ID>
+    <ID>MagicNumber:RoomParametersFetcher.kt$RoomParametersFetcher$200</ID>
+    <ID>MagicNumber:UnhandledExceptionHandler.kt$UnhandledExceptionHandler$8f</ID>
+    <ID>MagicNumber:WebSocketChannelClient.kt$WebSocketChannelClient$1000</ID>
+    <ID>MaxLineLength:AppRTCAudioManager.kt$AppRTCAudioManager$if</ID>
+    <ID>MaxLineLength:AppRTCBluetoothManager.kt$AppRTCBluetoothManager.BluetoothHeadsetBroadcastReceiver$"BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_AUDIO_STATE_CHANGED, s=%s, sb=%b, BT state: %s"</ID>
+    <ID>MaxLineLength:AppRTCBluetoothManager.kt$AppRTCBluetoothManager.BluetoothHeadsetBroadcastReceiver$"BluetoothHeadsetBroadcastReceiver.onReceive: a=ACTION_CONNECTION_STATE_CHANGED, s=%s, sb=%b, BT state: %s"</ID>
+    <ID>MaxLineLength:AppRTCUtils.kt$AppRTCUtils$"Android SDK: %d, Release: %s, Brand: %s, Device: %s, Id: %s, Hardware: %s, Manufacturer: %s, Model: %s, Product: %s"</ID>
+    <ID>MaxLineLength:CallActivity.kt$CallActivity$or</ID>
+    <ID>MaxLineLength:CallActivity.kt$CallActivity.Companion$View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY</ID>
+    <ID>MaxLineLength:CaptureQualityController.kt$CaptureQualityController$return (format.framerate.max.coerceAtMost((bandwidth / (format.width * format.height)).roundToInt()) / 1000.0).roundToInt()</ID>
+    <ID>MaxLineLength:DirectRTCClient.kt$DirectRTCClient$initiator = false</ID>
+    <ID>MaxLineLength:PeerConnectionClient.kt$PeerConnectionClient$analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins</ID>
+    <ID>MaxLineLength:RecordedAudioToFileController.kt$RecordedAudioToFileController$"recorded_audio_16bits_" + sampleRate.toString() + "Hz" + (if (channelCount == 1) "_mono" else "_stereo") + ".pcm"</ID>
+    <ID>MaxLineLength:RoomParametersFetcher.kt$RoomParametersFetcher$throw IOException("Non-200 response when requesting TURN server from $url : ${connection.getHeaderField(null)}")</ID>
+    <ID>MaxLineLength:SettingsFragment.kt$SettingsFragment$keyprefResolution</ID>
+    <ID>MaxLineLength:SettingsFragment.kt$SettingsFragment$keyprefVideoCall</ID>
+    <ID>MaxLineLength:SettingsFragment.kt$SettingsFragment$private val keyprefEnableSaveInputAudioToFile by lazy { getString(R.string.pref_enable_save_input_audio_to_file_key) }</ID>
+    <ID>NestedBlockDepth:RoomParametersFetcher.kt$RoomParametersFetcher$private fun roomHttpResponseParse(response: String)</ID>
+    <ID>NestedBlockDepth:WebSocketChannelClient.kt$WebSocketChannelClient$fun disconnect(waitForComplete: Boolean)</ID>
+    <ID>NestedBlockDepth:WebSocketRTCClient.kt$WebSocketRTCClient$override fun onWebSocketMessage(message: String)</ID>
+    <ID>NewLineAtEndOfFile:AppRTCBluetoothManager.kt$org.appspot.apprtc.AppRTCBluetoothManager.kt</ID>
+    <ID>NewLineAtEndOfFile:DirectRTCClient.kt$org.appspot.apprtc.DirectRTCClient.kt</ID>
+    <ID>NewLineAtEndOfFile:PeerConnectionClient.kt$org.appspot.apprtc.PeerConnectionClient.kt</ID>
+    <ID>NewLineAtEndOfFile:TCPChannelClient.kt$org.appspot.apprtc.TCPChannelClient.kt</ID>
+    <ID>ReturnCount:AppRTCAudioManager.kt$AppRTCAudioManager$@SuppressLint("WrongConstant") @Deprecated("") private fun hasWiredHeadset(): Boolean</ID>
+    <ID>ReturnCount:AppRTCBluetoothManager.kt$AppRTCBluetoothManager$@RequiresApi(Build.VERSION_CODES.S) @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) fun start()</ID>
+    <ID>ReturnCount:AppRTCBluetoothManager.kt$AppRTCBluetoothManager$@RequiresApi(Build.VERSION_CODES.S) @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) private fun bluetoothTimeout()</ID>
+    <ID>ReturnCount:AppRTCBluetoothManager.kt$AppRTCBluetoothManager$fun startScoAudio(): Boolean</ID>
+    <ID>ReturnCount:AppRTCProximitySensor.kt$AppRTCProximitySensor$private fun initDefaultSensor(): Boolean</ID>
+    <ID>ReturnCount:CallActivity.kt$CallActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>ReturnCount:CallActivity.kt$CallActivity$private fun createCameraCapturer(enumerator: CameraEnumerator): VideoCapturer?</ID>
+    <ID>ReturnCount:CallActivity.kt$CallActivity$private fun createVideoCapturer(): VideoCapturer?</ID>
+    <ID>ReturnCount:ConnectActivity.kt$ConnectActivity$@TargetApi(Build.VERSION_CODES.M) private fun getMissingPermissions(): Array&lt;String&gt;</ID>
+    <ID>ReturnCount:CpuMonitor.kt$CpuMonitor$@Synchronized private fun sampleCpuUtilization(): Boolean</ID>
+    <ID>ReturnCount:CpuMonitor.kt$CpuMonitor$private fun readProcStat(): ProcStat?</ID>
+    <ID>ReturnCount:PeerConnectionClient.kt$PeerConnectionClient$private fun createPeerConnectionInternal(signalingParameters: SignalingParameters)</ID>
+    <ID>SwallowedException:AsyncHttpURLConnection.kt$AsyncHttpURLConnection$e: SocketTimeoutException</ID>
+    <ID>SwallowedException:CallActivity.kt$CallActivity$e: IOException</ID>
+    <ID>SwallowedException:CpuMonitor.kt$CpuMonitor$e: FileNotFoundException</ID>
+    <ID>SwallowedException:CpuMonitor.kt$CpuMonitor$e: IOException</ID>
+    <ID>SwallowedException:TCPChannelClient.kt$TCPChannelClient$e: UnknownHostException</ID>
+    <ID>TooGenericExceptionCaught:CpuMonitor.kt$CpuMonitor$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PeerConnectionClient.kt$PeerConnectionClient$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:CallActivity.kt$CallActivity$throw RuntimeException("Failed to open video file for output: $it", e)</ID>
+    <ID>TooGenericExceptionThrown:CpuMonitor.kt$CpuMonitor$throw RuntimeException("CpuMonitor is not supported on this Android version.")</ID>
+    <ID>TooGenericExceptionThrown:DirectRTCClient.kt$DirectRTCClient.Companion$throw RuntimeException(e)</ID>
+    <ID>TooGenericExceptionThrown:PeerConnectionClient.kt$PeerConnectionClient$throw RuntimeException(e)</ID>
+    <ID>TooGenericExceptionThrown:WebSocketRTCClient.kt$WebSocketRTCClient.Companion$throw RuntimeException(e)</ID>
+    <ID>UnusedPrivateProperty:AppRTCAudioManager.kt$AppRTCAudioManager.Companion$private const val SPEAKERPHONE_TRUE = "true"</ID>
+    <ID>UnusedPrivateProperty:CpuMonitor.kt$CpuMonitor$val possiblyIgnoredError = executor.scheduleAtFixedRate( { cpuUtilizationTask() }, 0, CPU_STAT_SAMPLE_PERIOD_MS.toLong(), TimeUnit.MILLISECONDS )</ID>
+    <ID>UnusedPrivateProperty:PeerConnectionClient.kt$PeerConnectionClient.Companion$private const val DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT = "DtlsSrtpKeyAgreement"</ID>
+    <ID>UseOrEmpty:CallActivity.kt$CallActivity$intent.getStringExtra(EXTRA_PROTOCOL) ?: ""</ID>
+    <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$fps?.split("[ x]+")?.toTypedArray() ?: emptyArray()</ID>
+    <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$resolution?.split("[ x]+")?.toTypedArray() ?: emptyArray()</ID>
+    <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$sharedPref.getString(keyprefRoom, null) ?: ""</ID>
+    <ID>UseOrEmpty:PeerConnectionClient.kt$PeerConnectionClient$peerConnection?.senders ?: emptyList()</ID>
+    <ID>UseOrEmpty:PeerConnectionClient.kt$PeerConnectionClient$peerConnection?.transceivers ?: emptyList()</ID>
+  </CurrentIssues>
+</SmellBaseline>

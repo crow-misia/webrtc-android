@@ -84,7 +84,7 @@ class CaptureQualityController(
         )
     }
 
-    override fun onStartTrackingTouch(seekBar: SeekBar) {}
+    override fun onStartTrackingTouch(seekBar: SeekBar) = Unit
     override fun onStopTrackingTouch(seekBar: SeekBar) {
         callEvents?.onCaptureFormatChange(width, height, framerate)
     }
@@ -98,5 +98,4 @@ class CaptureQualityController(
         // Prioritize framerate below this threshold and resolution above the threshold.
         private const val FRAMERATE_THRESHOLD = 15
     }
-
 }

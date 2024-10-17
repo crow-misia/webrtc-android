@@ -386,7 +386,7 @@ class AppRTCBluetoothManager private constructor(
         return context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
-    protected fun registerReceiver(receiver: BroadcastReceiver, filter: IntentFilter?) {
+    private fun registerReceiver(receiver: BroadcastReceiver, filter: IntentFilter?) {
         context.registerReceiver(receiver, filter)
     }
 

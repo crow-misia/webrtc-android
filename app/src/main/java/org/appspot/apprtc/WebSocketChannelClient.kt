@@ -204,7 +204,7 @@ class WebSocketChannelClient(
                     reportError("WS $method error: $errorMessage")
                 }
 
-                override fun onHttpComplete(response: String) {}
+                override fun onHttpComplete(response: String) = Unit
             })
         httpConnection.send()
     }
@@ -263,7 +263,7 @@ class WebSocketChannelClient(
             }
         }
 
-        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {}
+        override fun onMessage(webSocket: WebSocket, bytes: ByteString) = Unit
     }
 
     companion object {

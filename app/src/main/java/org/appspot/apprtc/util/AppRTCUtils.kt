@@ -37,8 +37,8 @@ object AppRTCUtils {
 inline fun <reified T> JSONArray.toList(mapper: (JSONObject) -> T): MutableList<T> {
     val length = length()
     val results = ArrayList<T>(length)
-    (0 until length).forEach {
-        results[it] = mapper(getJSONObject(it))
+    for (i in 0 until length) {
+        results[i] = mapper(getJSONObject(i))
     }
     return results
 }

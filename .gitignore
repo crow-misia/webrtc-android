@@ -77,6 +77,9 @@ fastlane/readme.md
 # Version control
 vcs.xml
 
+# Kotlin
+.kotlin
+
 # lint
 lint/intermediates/
 lint/generated/

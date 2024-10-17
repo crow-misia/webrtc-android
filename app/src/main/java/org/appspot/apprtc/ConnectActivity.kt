@@ -262,7 +262,7 @@ class ConnectActivity : AppCompatActivity() {
         val info = try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("Failed to retrieve permissions.")
+            Timber.w(e, "Failed to retrieve permissions.")
             return emptyArray()
         }
         val requestedPermissions = info.requestedPermissions

@@ -265,14 +265,16 @@ class ConnectActivity : AppCompatActivity() {
             Timber.w("Failed to retrieve permissions.")
             return emptyArray()
         }
-        if (info.requestedPermissions == null) {
+        val requestedPermissions = info.requestedPermissions
+        val requestedPermissionsFlags = info.requestedPermissionsFlags
+        if (requestedPermissions == null || requestedPermissionsFlags == null) {
             Timber.w("No requested permissions.")
             return emptyArray()
         }
         val missingPermissions = ArrayList<String>()
-        for (i in info.requestedPermissions.indices) {
-            if (info.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == 0) {
-                missingPermissions.add(info.requestedPermissions[i])
+        for (i in requestedPermissions.indices) {
+            if (requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == 0) {
+                missingPermissions.add(requestedPermissions[i])
             }
         }
         Timber.d("Missing permissions: %s", missingPermissions)

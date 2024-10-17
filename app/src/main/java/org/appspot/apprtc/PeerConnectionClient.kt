@@ -945,7 +945,7 @@ class PeerConnectionClient(
         }
 
         override fun onSelectedCandidatePairChanged(event: CandidatePairChangeEvent) {
-            Timber.d("Selected candidate pair changed because: %s", event)
+            Timber.d("Selected candidate pair changed because: %s", event.reason)
         }
 
         override fun onAddStream(stream: MediaStream) {}

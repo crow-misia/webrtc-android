@@ -92,7 +92,7 @@ class AppRTCBluetoothManager private constructor(
             Timber.d("onServiceConnected done: BT state=%s", bluetoothState)
         }
 
-        /** Notifies the client when the proxy object has been disconnected from the service.  */
+        // Notifies the client when the proxy object has been disconnected from the service.
         override fun onServiceDisconnected(profile: Int) {
             if (profile != BluetoothProfile.HEADSET || bluetoothState == State.UNINITIALIZED) {
                 return

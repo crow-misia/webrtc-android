@@ -12,7 +12,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [versions]
 
-android-gradle-plugin = "8.7.2"
+android-gradle-plugin = "8.7.3"
 
 android-tools-desugar_jdk_libs = "2.1.3"
 

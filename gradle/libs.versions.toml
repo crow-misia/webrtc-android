@@ -14,7 +14,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 android-gradle-plugin = "8.7.3"
 
-android-tools-desugar_jdk_libs = "2.1.3"
+android-tools-desugar_jdk_libs = "2.1.4"
 
 androidx-activity = "1.9.3"
 
@@ -48,7 +48,7 @@ kotest = "5.9.1"
 
 kotlin = "2.1.0"
 
-kotlinx-coroutines = "1.9.0"
+kotlinx-coroutines = "1.10.0"
 
 libwebrtc = "132.6834.4.0"
 

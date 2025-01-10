@@ -12,7 +12,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [versions]
 
-android-gradle-plugin = "8.7.3"
+android-gradle-plugin = "8.8.0"
 
 android-tools-desugar_jdk_libs = "2.1.4"
 
@@ -56,7 +56,7 @@ mockk = "1.13.14"
 
 okhttp3 = "5.0.0-alpha.14"
 
-okio = "3.10.1"
+okio = "3.10.2"
 
 sdp = "1.5.0"
 

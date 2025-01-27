@@ -46,7 +46,7 @@ detekt = "1.23.7"
 
 kotest = "5.9.1"
 
-kotlin = "2.1.0"
+kotlin = "2.1.10"
 
 kotlinx-coroutines = "1.10.1"
 

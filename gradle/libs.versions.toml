@@ -52,7 +52,7 @@ kotlinx-coroutines = "1.10.2"
 
 libwebrtc = "136.7103.0.0"
 
-mockk = "1.14.0"
+mockk = "1.14.2"
 
 okhttp3 = "5.0.0-alpha.14"
 

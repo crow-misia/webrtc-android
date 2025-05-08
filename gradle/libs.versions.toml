@@ -26,7 +26,7 @@ androidx-core = "1.16.0"
 
 androidx-fragment = "1.8.6"
 
-androidx-lifecycle = "2.8.7"
+androidx-lifecycle = "2.9.0"
 
 androidx-preference = "1.2.1"
 

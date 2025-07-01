@@ -50,7 +50,7 @@ kotlin = "2.2.0"
 
 kotlinx-coroutines = "1.10.2"
 
-libwebrtc = "137.7151.3.0"
+libwebrtc = "139.7258.0.0"
 
 mockk = "1.14.4"
 

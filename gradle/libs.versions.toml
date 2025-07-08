@@ -50,11 +50,11 @@ kotlin = "2.2.0"
 
 kotlinx-coroutines = "1.10.2"
 
-libwebrtc = "139.7258.0.0"
+libwebrtc = "139.7258.0.1"
 
 mockk = "1.14.4"
 
-okhttp3 = "5.0.0-alpha.17"
+okhttp3 = "5.1.0"
 
 okio = "3.15.0"
 

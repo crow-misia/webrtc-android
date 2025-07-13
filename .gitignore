@@ -77,8 +77,17 @@ fastlane/readme.md
 # Version control
 vcs.xml
 
+# macOS
+.DS_Store
+
+# Node.js
+node_modules/
+
 # Kotlin
 .kotlin
+
+# Lefthook
+lefthook-local.*
 
 # lint
 lint/intermediates/

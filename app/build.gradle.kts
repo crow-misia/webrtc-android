@@ -66,14 +66,26 @@ android {
             excludes.add("META-INF/proguard/*.pro")
         }
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+        unitTests.all {
+            it.useJUnitPlatform()
+            it.testLogging {
+                showStandardStreams = true
+                events("passed", "skipped", "failed")
+            }
+            it.failOnNoDiscoveredTests = false
+        }
+    }
 }
 
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
         jvmTarget.set(JvmTarget.JVM_11)
-        apiVersion.set(KotlinVersion.KOTLIN_1_9)
-        languageVersion.set(KotlinVersion.KOTLIN_1_9)
     }
 }
 

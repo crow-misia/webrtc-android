@@ -7,7 +7,7 @@ pluginManagement {
 }
 
 plugins {
-    id("de.fayard.refreshVersions") version "0.60.5"
+    id("jp.co.gahojin.refreshVersions") version "0.3.0"
 }
 
 dependencyResolutionManagement {

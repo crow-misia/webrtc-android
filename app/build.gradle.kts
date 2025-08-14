@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "org.appspot.apprtc"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "org.appspot.apprtc"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -22,9 +22,9 @@ androidx-annotation = "1.9.1"
 
 androidx-appcompat = "1.7.1"
 
-androidx-core = "1.16.0"
+androidx-core = "1.17.0"
 
-androidx-fragment = "1.8.8"
+androidx-fragment = "1.8.9"
 
 androidx-lifecycle = "2.9.2"
 
@@ -46,11 +46,11 @@ detekt = "1.23.8"
 
 kotest = "5.9.1"
 
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 
 kotlinx-coroutines = "1.10.2"
 
-libwebrtc = "139.7258.1.0"
+libwebrtc = "139.7258.3.0"
 
 mockk = "1.14.5"
 

@@ -33,6 +33,8 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import org.appspot.apprtc.databinding.ActivityConnectBinding
 import org.json.JSONArray
@@ -76,6 +78,12 @@ class ConnectActivity : AppCompatActivity() {
         binding = ActivityConnectBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         // Get setting keys.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)

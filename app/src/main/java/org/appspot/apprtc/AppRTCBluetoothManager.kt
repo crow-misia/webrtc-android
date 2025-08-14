@@ -416,11 +416,10 @@ class AppRTCBluetoothManager private constructor(
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun logBluetoothAdapterInfo(localAdapter: BluetoothAdapter) {
         Timber.d(
-            "BluetoothAdapter: enabled=%b, state=%s, name=%s, address=%s",
+            "BluetoothAdapter: enabled=%b, state=%s, name=%s",
             localAdapter.isEnabled,
             stateToString(localAdapter.state),
             localAdapter.name,
-            localAdapter.address
         )
         // Log the set of BluetoothDevice objects that are bonded (paired) to the local adapter.
         val pairedDevices = localAdapter.bondedDevices

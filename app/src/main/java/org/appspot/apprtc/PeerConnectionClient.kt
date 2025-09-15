@@ -338,13 +338,15 @@ class PeerConnectionClient(
         if (peerConnectionParameters.loopback) {
             options.disableEncryption = true
         }
+        val fieldTrials = getFieldTrials(peerConnectionParameters)
         factory = PeerConnectionFactory.builder()
+            .setFieldTrials(fieldTrials)
             .setOptions(options)
             .setAudioDeviceModule(adm)
             .setVideoEncoderFactory(encoderFactory)
             .setVideoDecoderFactory(decoderFactory)
             .createPeerConnectionFactory()
-        Timber.d("Peer connection factory created.")
+        Timber.d("Peer connection factory created. Field trials: $fieldTrials")
         adm.release()
     }
 
@@ -1187,12 +1189,10 @@ class PeerConnectionClient(
      */
     init {
         Timber.d("Preferred video codec: %s", getSdpVideoCodecName(peerConnectionParameters))
-        val fieldTrials = getFieldTrials(peerConnectionParameters)
         executor.execute {
-            Timber.d("Initialize WebRTC. Field trials: %s", fieldTrials)
+            Timber.d("Initialize WebRTC.")
             PeerConnectionFactory.initialize(
                 PeerConnectionFactory.InitializationOptions.builder(appContext)
-                    .setFieldTrials(fieldTrials)
                     .setEnableInternalTracer(true)
                     .createInitializationOptions()
             )

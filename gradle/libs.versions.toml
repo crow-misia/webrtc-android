@@ -26,7 +26,7 @@ androidx-core = "1.17.0"
 
 androidx-fragment = "1.8.9"
 
-androidx-lifecycle = "2.9.3"
+androidx-lifecycle = "2.9.4"
 
 androidx-preference = "1.2.1"
 
@@ -50,7 +50,7 @@ kotlin = "2.2.20"
 
 kotlinx-coroutines = "1.10.2"
 
-libwebrtc = "140.7339.1.0"
+libwebrtc = "141.7390.2.0"
 
 mockk = "1.14.5"
 

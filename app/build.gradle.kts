@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "org.appspot.apprtc"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
@@ -44,7 +44,7 @@ android {
 
     lint {
         textReport = true
-        baseline = file("lint-baseline.xml")
+        baseline = projectDir.resolve("lint-baseline.xml")
     }
 
     kapt {
@@ -53,8 +53,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility(JavaVersion.VERSION_11)
-        targetCompatibility(JavaVersion.VERSION_11)
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     packaging {
@@ -85,7 +85,7 @@ android {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
-        jvmTarget.set(JvmTarget.JVM_11)
+        jvmTarget = JvmTarget.JVM_11
     }
 }
 
@@ -94,7 +94,7 @@ detekt {
     buildUponDefaultConfig = true
     allRules = false
     autoCorrect = true
-    config.setFrom(files("$rootDir/config/detekt.yml"))
+    config.setFrom(files(rootDir.resolve("config/detekt.yml")))
 }
 
 dependencies {

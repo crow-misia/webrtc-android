@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:AppRTCAudioManager.kt$AppRTCAudioManager$fun updateAudioDeviceState()</ID>
     <ID>CyclomaticComplexMethod:CallActivity.kt$CallActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
@@ -104,6 +104,18 @@
     <ID>TooGenericExceptionThrown:DirectRTCClient.kt$DirectRTCClient.Companion$throw RuntimeException(e)</ID>
     <ID>TooGenericExceptionThrown:PeerConnectionClient.kt$PeerConnectionClient$throw RuntimeException(e)</ID>
     <ID>TooGenericExceptionThrown:WebSocketRTCClient.kt$WebSocketRTCClient.Companion$throw RuntimeException(e)</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO)</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$Timber.d("Peer connection created.")</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$if (dataChannelEnabled) { val init = DataChannel.Init() peerConnectionParameters.dataChannelParameters?.also { init.ordered = it.ordered init.negotiated = it.negotiated init.maxRetransmits = it.maxRetransmits init.maxRetransmitTimeMs = it.maxRetransmitTimeMs init.id = it.id init.protocol = it.protocol } dataChannel = peerConnection.createDataChannel("ApprtcDemo data", init) }</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$if (isVideoCallEnabled) { findVideoSender() }</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$if (isVideoCallEnabled) { peerConnection.addTrack(createVideoTrack(videoCapturer), mediaStreamLabels) // We can add the renderers right away because we don't need to wait for an // answer to get the remote track. remoteVideoTrack = getRemoteVideoTrack()?.also { it.setEnabled(renderVideo) for (remoteSink in remoteSinks) { it.addSink(remoteSink) } } }</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$if (peerConnectionParameters.aecDump) { try { val aecDumpFileDescriptor = ParcelFileDescriptor.open( File(appContext.getExternalFilesDir(null), "Download/audio.aecdump"), ParcelFileDescriptor.MODE_READ_WRITE or ParcelFileDescriptor.MODE_CREATE or ParcelFileDescriptor.MODE_TRUNCATE ) factory.startAecDump(aecDumpFileDescriptor.detachFd(), -1) } catch (e: IOException) { Timber.e(e, "Can not open aecdump file") } }</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$if (saveRecordedAudioToFile?.start() == true) { Timber.d("Recording input audio to file is activated") }</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$isInitiator = false</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$peerConnection.addTrack(createAudioTrack(), mediaStreamLabels)</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$this.peerConnection = peerConnection</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$val mediaStreamLabels = listOf("ARDAMS")</ID>
+    <ID>UnreachableCode:PeerConnectionClient.kt$PeerConnectionClient$val peerConnection = factory.createPeerConnection(rtcConfig, pcObserver) ?: return</ID>
     <ID>UnusedPrivateProperty:AppRTCAudioManager.kt$AppRTCAudioManager.Companion$private const val SPEAKERPHONE_TRUE = "true"</ID>
     <ID>UnusedPrivateProperty:CpuMonitor.kt$CpuMonitor$val possiblyIgnoredError = executor.scheduleAtFixedRate( { cpuUtilizationTask() }, 0, CPU_STAT_SAMPLE_PERIOD_MS.toLong(), TimeUnit.MILLISECONDS )</ID>
     <ID>UnusedPrivateProperty:PeerConnectionClient.kt$PeerConnectionClient.Companion$private const val DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT = "DtlsSrtpKeyAgreement"</ID>
@@ -111,7 +123,5 @@
     <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$fps?.split("[ x]+")?.toTypedArray() ?: emptyArray()</ID>
     <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$resolution?.split("[ x]+")?.toTypedArray() ?: emptyArray()</ID>
     <ID>UseOrEmpty:ConnectActivity.kt$ConnectActivity$sharedPref.getString(keyprefRoom, null) ?: ""</ID>
-    <ID>UseOrEmpty:PeerConnectionClient.kt$PeerConnectionClient$peerConnection?.senders ?: emptyList()</ID>
-    <ID>UseOrEmpty:PeerConnectionClient.kt$PeerConnectionClient$peerConnection?.transceivers ?: emptyList()</ID>
   </CurrentIssues>
 </SmellBaseline>

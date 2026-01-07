@@ -41,6 +41,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
 import java.util.*
+import androidx.core.net.toUri
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * Handles the initial setup where the user selects which room to join.
@@ -606,12 +609,12 @@ class ConnectActivity : AppCompatActivity() {
         // Start AppRTCMobile activity.
         Timber.d("Connecting to room %s at URL %s", newRoomId, roomUrl)
         if (validateUrl(roomUrl)) {
-            val uri = Uri.parse(roomUrl)
+            val uri = roomUrl.toUri()
             val intent = Intent(this, CallActivity::class.java)
             intent.data = uri
             intent.putExtra(CallActivity.EXTRA_ROOMID, newRoomId)
             if (webSocketServerUrl?.isNotBlank() == true && validateUrl(webSocketServerUrl)) {
-                val webSocketUri = Uri.parse(webSocketServerUrl)
+                val webSocketUri = webSocketServerUrl.toUri()
                 val wstls = URLUtil.isHttpsUrl(webSocketServerUrl)
                 intent.putExtra(CallActivity.EXTRA_URLPARAMETERS,
                     "wshpp=%s:%s&wstls=%b&ts=".format(webSocketUri.host, webSocketUri.port, wstls)
@@ -699,7 +702,12 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalContracts::class)
     private fun validateUrl(url: String?): Boolean {
+        contract {
+            returns(true) implies (url is String)
+        }
+
         if (URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url)) {
             return true
         }

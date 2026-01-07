@@ -250,13 +250,7 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private fun requestPermissions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // Dynamic permissions are not required before Android M.
-            onPermissionsGranted()
-            return
-        }
         val missingPermissions = getMissingPermissions()
         if (missingPermissions.isNotEmpty()) {
             requestPermissions(missingPermissions, PERMISSION_REQUEST)
@@ -265,11 +259,7 @@ class ConnectActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private fun getMissingPermissions(): Array<String> {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return emptyArray()
-        }
         val info = try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
         } catch (e: PackageManager.NameNotFoundException) {

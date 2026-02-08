@@ -32,9 +32,9 @@ androidx-test-rules = "1.7.0"
 
 androidx-window = "1.5.1"
 
-detekt = "2.0.0-alpha.1"
+detekt = "2.0.0-alpha.2"
 
-kotest = "6.1.1"
+kotest = "6.1.2"
 
 kotlin = "2.3.0"
 
@@ -42,7 +42,7 @@ kotlinx-coroutines = "1.10.2"
 
 libwebrtc = "141.7390.2.0"
 
-mockk = "1.14.7"
+mockk = "1.14.9"
 
 okhttp3 = "5.3.2"
 

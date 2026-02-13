@@ -34,9 +34,9 @@ androidx-window = "1.5.1"
 
 detekt = "2.0.0-alpha.2"
 
-kotest = "6.1.2"
+kotest = "6.1.3"
 
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 
 kotlinx-coroutines = "1.10.2"
 

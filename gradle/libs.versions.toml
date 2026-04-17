@@ -8,7 +8,7 @@ android-tools-desugar_jdk_libs = "2.1.5"
 
 androidx-activity = "1.13.0"
 
-androidx-annotation = "1.9.1"
+androidx-annotation = "1.10.0"
 
 androidx-appcompat = "1.7.1"
 
@@ -34,7 +34,7 @@ androidx-window = "1.5.1"
 
 detekt = "2.0.0-alpha.2"
 
-kotest = "6.1.10"
+kotest = "6.1.11"
 
 kotlin = "2.3.20"
 

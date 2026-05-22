@@ -2,7 +2,7 @@
 
 [versions]
 
-android-gradle-plugin = "8.13.2"
+android-gradle-plugin = "9.2.1"
 
 android-tools-desugar_jdk_libs = "2.1.5"
 
@@ -38,7 +38,7 @@ kotest = "6.1.11"
 
 kotlin = "2.3.21"
 
-kotlinx-coroutines = "1.10.2"
+kotlinx-coroutines = "1.11.0"
 
 libwebrtc = "141.7390.2.0"
 

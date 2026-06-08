@@ -1,16 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.detekt)
 }
 
 android {
     namespace = "org.appspot.apprtc"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.appspot.apprtc"
@@ -45,10 +42,6 @@ android {
     lint {
         textReport = true
         baseline = projectDir.resolve("lint-baseline.xml")
-    }
-
-    kapt {
-        correctErrorTypes = true
     }
 
     compileOptions {

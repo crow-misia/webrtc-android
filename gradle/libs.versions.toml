@@ -2,7 +2,7 @@
 
 [versions]
 
-android-gradle-plugin = "9.2.1"
+android-gradle-plugin = "9.3.1"
 
 android-tools-desugar_jdk_libs = "2.1.5"
 
@@ -34,9 +34,9 @@ androidx-window = "1.5.1"
 
 detekt = "2.0.0-alpha.5"
 
-kotest = "6.2.1"
+kotest = "6.2.3"
 
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 
 kotlinx-coroutines = "1.11.0"
 
@@ -46,9 +46,9 @@ mockk = "1.14.11"
 
 okhttp3 = "5.4.0"
 
-okio = "3.17.0"
+okio = "3.18.1"
 
-sdp = "1.6.0"
+sdp = "1.7.0"
 
 timber = "5.0.1"
 

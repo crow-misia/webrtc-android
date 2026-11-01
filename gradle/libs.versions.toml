@@ -2,7 +2,7 @@
 
 [versions]
 
-android-gradle-plugin = "9.4.1"
+android-gradle-plugin = "9.5.0"
 
 android-tools-desugar_jdk_libs = "2.1.5"
 
@@ -34,9 +34,9 @@ androidx-window = "1.5.1"
 
 detekt = "2.0.0-alpha.6"
 
-kotest = "6.2.5"
+kotest = "6.2.6"
 
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 
 kotlinx-coroutines = "1.11.0"
 
@@ -44,7 +44,7 @@ libwebrtc = "149.7827.5.0"
 
 mockk = "1.14.11"
 
-okhttp3 = "5.5.0"
+okhttp3 = "5.5.1"
 
 okio = "3.18.2"
 
